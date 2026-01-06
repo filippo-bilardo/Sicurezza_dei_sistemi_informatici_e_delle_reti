@@ -558,7 +558,7 @@ Poco usato in pratica per ambiguità decifratura.
 ## 🔗 Collegamenti
 
 - **Precedente**: [Capitolo 10 - ECC](10_crittografia_a_curva_ellittica_ecc.md)
-- **Successivo**: [Capitolo 12 - Hash](../PARTE_04_Hash_Integrita/12_funzioni_hash_crittografiche.md)
+- **Successivo**: [Capitolo 12 - Hash](../04_Hash_Integrita/12_funzioni_hash_crittografiche.md)
 - **Indice**: [Torna all'indice](../00_INDICE.md)
 
 ---

@@ -798,7 +798,7 @@ def client(key):
 ## 🔗 Collegamenti
 
 - **Precedente**: [Capitolo 5 - Modi di Operazione](05_modi_di_operazione.md)
-- **Successivo**: [Capitolo 7 - Introduzione Crittografia Asimmetrica](../PARTE_03_Crittografia_Asimmetrica/07_introduzione_alla_crittografia_asimmetrica.md)
+- **Successivo**: [Capitolo 7 - Introduzione Crittografia Asimmetrica](../03_Crittografia_Asimmetrica/07_introduzione_alla_crittografia_asimmetrica.md)
 - **Indice**: [Torna all'indice](../00_INDICE.md)
 
 ---

@@ -3,7 +3,7 @@
 > **Corso**: Sistemi e Reti 3  
 > **Parte**: 0 - Fondamenti di Sicurezza Informatica  
 > **Autore**: Prof. Filippo Bilardo  
-> **Ultima modifica**: Dicembre 2024
+> **Ultima modifica**: Dicembre 2025
 
 ---
 
@@ -573,7 +573,7 @@ Rischi residui: Accettati e documentati
 
 ## 🔗 Collegamenti
 
-- **Prossimo**: [Capitolo 1 - Introduzione alla Crittografia](../PARTE_01_Fondamenti_Crittografia/01_introduzione_alla_crittografia.md)
+- **Prossimo**: [Capitolo 1 - Introduzione alla Crittografia](../01_Fondamenti_Crittografia/01_introduzione_alla_crittografia.md)
 - **Indice**: [Torna all'indice principale](../00_INDICE.md)
 
 ---

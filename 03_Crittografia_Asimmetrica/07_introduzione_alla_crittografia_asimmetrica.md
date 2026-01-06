@@ -16,7 +16,7 @@ La **crittografia asimmetrica** (o a chiave pubblica) è una rivoluzione nella c
 Alice                           Bob
   │                              │
   ├─ Come condividere chiave?───►│
-  │  (Canal non sicuro!)          │
+  │  (Canal non sicuro!)         │
 ```
 
 ❌ Distribuzione chiave è difficile  
@@ -46,9 +46,16 @@ $$M = D_{K_{priv}}(C)$$
 
 **Cruciale**: Impossibile derivare $K_{priv}$ da $K_{pub}$
 
+- C: Ciphertext  
+- M: Messaggio (plaintext)
+- E: Funzione di cifratura
+- D: Funzione di decifratura
+- K_pub: Chiave pubblica
+- K_priv: Chiave privata
+
 ## Funzioni Trapdoor
 
-Alla base della crittografia asimmetrica ci sono le **funzioni one-way con trapdoor**:
+Alla base della crittografia asimmetrica ci sono le **funzioni one-way con trapdoor**: (trapdoor = porta segreta)
 
 ### Definizione
 

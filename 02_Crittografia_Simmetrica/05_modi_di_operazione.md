@@ -705,5 +705,5 @@ def decrypt_and_verify(data, encryption_key, mac_key):
 
 ---
 
-**Capitolo Precedente**: [04 - Precedente](#)  
-**Prossimo Capitolo**: [06 - Successivo](#)
+**Capitolo Precedente**: [04 - Cifrari a Blocchi](04_cifrari_a_blocchi.md)  
+**Prossimo Capitolo**: [06 - Cifrari a Flusso](06_cifrari_a_flusso.md)

@@ -314,4 +314,4 @@ Calcola l'entropia di:
 ---
 
 **Capitolo Precedente**: [01 - Introduzione alla Crittografia](01_introduzione_alla_crittografia.md)  
-**Prossimo Capitolo**: [03 - Introduzione alla Crittografia Simmetrica](03_introduzione_crittografia_simmetrica.md)
+**Prossimo Capitolo**: [03 - Introduzione alla Crittografia Simmetrica](../02_Crittografia_Simmetrica/03_introduzione_crittografia_simmetrica.md)
