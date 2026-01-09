@@ -328,14 +328,12 @@ Questa è la chiave che dovrai copiare sul server.
 Copiare la chiave pubblica sul server `w4s.filippobilardo.it` nella file `~/.ssh/authorized_keys`.
 nella cartella home dell'utente `cognome.nome`.
 
-#### Metodo A: Utilizzare ssh-copy-id (Linux/macOS/Git Bash)
+#### Metodo A: Utilizzare ssh-copy-id (Linux/macOS/Git Bash) - Metodo non raccomandato, usare metodo B manuale
 
 ```bash
 cd ~/.ssh/
 ssh-copy-id -i id_ed25519.pub -p 2222 cognome.nome@w4s.filippobilardo.it
 ```
-
-**Nota:** Sostituisci `cognome.nome` con le tue credenziali.
 
 Ti verrà chiesta la password del server (questa sarà l'ultima volta!):
 ```
@@ -384,8 +382,8 @@ chmod 600 ~/.ssh/authorized_keys
 ```bash
 exit
 ```
-
-8. Metodo alternativo: usa `scp` per copiare il file:
+#### Metodo C: Usare il comando `ssh` con `cat` e redirezione
+Metodo alternativo: uso di `scp` per copiare il file:
 ```bash
 # Copiare la chiave sul server
 scp -P 2222 ~/.ssh/id_ed25519.pub cognome.nome@w4s.filippobilardo.it:~/id_ed25519.pub
@@ -402,7 +400,8 @@ rm ~/id_ed25519.pub
 exit
 ```
 
-9. Metodo alternativo: Copia manuale con cat e pipe:
+#### Metodo D: Usare il comando `ssh` con `cat` e pipe
+Metodo alternativo: Copia manuale con cat e pipe:
 ```bash
 # In un solo comando
 cat ~/.ssh/id_ed25519.pub | ssh utente@server "mkdir -p ~/.ssh && chmod 700 ~/.ssh && cat >> ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys"    
@@ -425,7 +424,7 @@ Enter passphrase for key '/home/user/.ssh/id_ed25519':
 
 ✅ Se riesci ad accedere senza inserire la password del server, l'autenticazione con chiavi funziona correttamente!
 
-### Step 6: Configurare SSH per Semplificare la Connessione (Opzionale)
+### Step 6 (Opzionale): Configurare SSH per Semplificare la Connessione
 
 Crea/modifica il file `~/.ssh/config`:
 
@@ -455,7 +454,7 @@ Ora puoi connetterti semplicemente con:
 ssh w4s
 ```
 
-### Step 7: Configurare l'SSH Agent (Opzionale)
+### Step 7 (Opzionale): Configurare l'SSH Agent
 
 Per non dover inserire la passphrase ad ogni connessione:
 
@@ -489,7 +488,7 @@ Start-Service ssh-agent
 ssh-add $env:USERPROFILE\.ssh\id_ed25519
 ```
 
-### Step 8. Configurazione SSH client (Opzionale)
+### Step 8 (Opzionale): Configurazione SSH client
 
 #### File di configurazione SSH client (~/.ssh/config)
 
@@ -579,7 +578,7 @@ Host myserver
     PubkeyAuthentication yes
 ```
 
-### Step 9: Configurare il Server SSH (Opzionale)
+### Step 9 (Opzionale): Configurare il Server SSH
 
 Il file di configurazione del server SSH si trova in `/etc/ssh/sshd_config`.
 e consente di personalizzare le impostazioni di sicurezza e accesso.
