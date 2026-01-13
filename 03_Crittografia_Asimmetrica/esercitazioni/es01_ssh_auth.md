@@ -1,29 +1,23 @@
 # Autenticazione SSH con Chiave Pubblica/Privata
 
+SSH (Secure Shell) è un protocollo crittografico utilizzato per comunicare in modo sicuro con server remoti. In questa guida imparerai come configurare l'autenticazione basata su chiavi crittografiche, un metodo più sicuro rispetto all'autenticazione con password.
+
 ## Indice
-1. [Introduzione](#introduzione)
-2. [Teoria](#teoria)
+1. [Introduzione teorica](#introduzione-teorica)
 3. [Prerequisiti](#prerequisiti)
 4. [Esercitazione Pratica](#esercitazione-pratica)
 5. [Verifica e Troubleshooting](#verifica-e-troubleshooting)
 6. [Utilizzo di VS Code con SSH](#utilizzo-di-vs-code-con-ssh)
 7. [Esercizi](#esercizi)
 
----
 
-## Introduzione
-
-SSH (Secure Shell) è un protocollo crittografico utilizzato per comunicare in modo sicuro con server remoti. In questa guida imparerai come configurare l'autenticazione basata su chiavi crittografiche, un metodo più sicuro rispetto all'autenticazione con password.
-
-### Obiettivi della Lezione
+## Obiettivi della Lezione
 - Comprendere il funzionamento della crittografia asimmetrica
 - Generare una coppia di chiavi SSH (pubblica/privata)
 - Configurare l'accesso al server senza password
 - Collegare al server `cognome.nome@w4s.filippobilardo.it -p 2222`
 
----
-
-## Teoria
+## Introduzione teorica
 
 ### Cos'è SSH?
 
@@ -102,7 +96,7 @@ L'autenticazione SSH con chiavi utilizza la **crittografia asimmetrica**, che si
 - Utilizzata per **cifrare** messaggi destinati al possessore della chiave privata
 - Generalmente memorizzata in `~/.ssh/id_rsa.pub` o `~/.ssh/id_ed25519.pub` o `~/.ssh/id_ed25519_rossi.marco.key.pub`
 
-### Come Funziona l'Autenticazione?
+#### Come Funziona l'Autenticazione?
 
 ```
 ┌─────────────┐                           ┌─────────────┐
@@ -135,7 +129,7 @@ L'autenticazione SSH con chiavi utilizza la **crittografia asimmetrica**, che si
 
 **Attenzione**: Se volete utilizzare solo l'autenticazione con chiavi, è possibile disabilitare l'autenticazione con password nel file di configurazione del server SSH (`/etc/ssh/sshd_config`), impostando `PasswordAuthentication no`.
 
-### Vantaggi dell'Autenticazione con Chiavi
+#### Vantaggi dell'Autenticazione con Chiavi
 
 ✅ **Sicurezza maggiore**: Le chiavi sono molto più lunghe e complesse delle password  
 ✅ **Nessuna trasmissione di credenziali**: La chiave privata non lascia mai il client  
@@ -143,7 +137,7 @@ L'autenticazione SSH con chiavi utilizza la **crittografia asimmetrica**, che si
 ✅ **Automazione**: Permette script e connessioni automatiche senza inserire password  
 ✅ **Gestione centralizzata**: Facile revocare l'accesso rimuovendo la chiave pubblica dal server  
 
-### Tipi di Algoritmi per Chiavi SSH
+#### Tipi di Algoritmi per Chiavi SSH
 
 | Algoritmo | Lunghezza | Sicurezza | Velocità | Raccomandato |
 |-----------|-----------|-----------|----------|--------------|
@@ -163,9 +157,17 @@ L'algoritmo Ed25519
 
 ---
 
-## Autenticazione solo con Password
+### Autenticazione solo con Password
 
-### Prima connessione:
+SSH supporta anche l'autenticazione tramite password, ma è meno sicura rispetto all'uso delle chiavi. In questo metodo, il client invia la password al server per verificare l'identità dell'utente. 
+Con l'autenticazione con password:
+- La password viene trasmessa (anche se cifrata)
+- È vulnerabile ad attacchi di forza bruta e intercettazioni
+- Non è adatta per l'automazione senza intervento umano
+- Può essere disabilitata per aumentare la sicurezza, quando si utilizza l'autenticazione con chiavi
+- Può essere usata come metodo di fallback se le chiavi non sono disponibili
+
+#### Prima connessione:
 
 Alla prima connessione, SSH chiederà di verificare la fingerprint del server:
 
@@ -181,11 +183,11 @@ Are you sure you want to continue connecting (yes/no/[fingerprint])?
 fingerprint significa "impronta digitale" ed è un hash univoco della chiave pubblica del server.
 
 
-### File known_hosts:
+#### File known_hosts:
 
 Il file `~/.ssh/known_hosts` memorizza le chiavi pubbliche dei server a cui ti sei connesso in precedenza. Serve a prevenire attacchi di tipo "man-in-the-middle".
 
-### Comandi utili per gestire known_hosts:
+#### Comandi utili per gestire known_hosts:
 ```bash
 # Visualizzare le chiavi salvate
 cat ~/.ssh/known_hosts
@@ -224,7 +226,7 @@ OpenSSH_8.9p1 Ubuntu-3ubuntu0.1, OpenSSL 3.0.2 15 Mar 2022
 
 ---
 
-## Esercitazione Pratica 1 
+## Esercitazione Pratica 1 - SSH con Chiave Pubblica/Privata
 
 ### Step 1: Generare la Coppia di Chiavi
 
@@ -403,9 +405,9 @@ Enter passphrase for key '/home/user/.ssh/id_ed25519':
 ✅ Se riesci ad accedere senza inserire la password del server, l'autenticazione con chiavi funziona correttamente!
 
 
-## Esercitazione Pratica 2 
+## Esercitazione Pratica 2 - config per semplificare la connessione SSH
 
-### Configurare il file config per semplificare la connessione SSH
+### Configurare il file config
 Dal prompt dei comandi di windows (Git Bash, PowerShell) o terminale Linux/macOS:
 Crea (o modifica se già esiste) il file `~/.ssh/config`:
 ```bash
@@ -475,10 +477,9 @@ ssh interno
 ```
 
 
-## Esercitazione Pratica 3 (OPZIONALE)
-### Configurare l'SSH Agent
+## Esercitazione Pratica 3 (OPZIONALE) - salvataggio della passphrase con SSH Agent
 
-Per non dover inserire la passphrase ad ogni connessione:
+Per non dover inserire la passphrase ad ogni connessione, Configurare l'SSH Agent, un programma che memorizza le chiavi in memoria crittografata.:
 
 #### Linux/macOS:
 
@@ -548,11 +549,11 @@ Host myserver
 ```
 
 
-## Esercitazione Pratica 4 (OPZIONALE)
-### Configurare il Server SSH
+## Esercitazione Pratica 4 (OPZIONALE) - Configurare il Server SSH
 
 Il file di configurazione del server SSH si trova in `/etc/ssh/sshd_config`.
 e consente di personalizzare le impostazioni di sicurezza e accesso.
+Solo l'amministratore di sistema (root) può modificare questo file.
 
 #### File di configurazione SSH server (/etc/ssh/sshd_config)
 
@@ -625,6 +626,354 @@ sudo sshd -t
 # Se tutto è OK, riavviare il servizio
 sudo systemctl restart ssh
 ```
+
+---
+
+## Esercitazione Pratica 5 - Utilizzo di VS Code con SSH
+
+Visual Studio Code offre un'eccellente integrazione con SSH tramite l'estensione **Remote - SSH**, che permette di sviluppare direttamente su server remoti come se fossero in locale.
+
+### Vantaggi di VS Code Remote - SSH
+
+✅ **Sviluppo remoto**: Modifica file direttamente sul server  
+✅ **Terminale integrato**: Esegui comandi sul server  
+✅ **Debug remoto**: Debug applicazioni sul server  
+✅ **Estensioni**: Usa le tue estensioni VS Code sul server  
+✅ **Sincronizzazione automatica**: Nessun bisogno di FTP/SCP manuale  
+✅ **Performance**: Il codice viene eseguito sul server, solo l'interfaccia è locale  
+
+### Step 1: Installare l'Estensione Remote - SSH
+
+1. Apri **VS Code**
+2. Vai su **Extensions** (Ctrl+Shift+X o Cmd+Shift+X)
+3. Cerca **"Remote - SSH"**
+4. Installa l'estensione pubblicata da **Microsoft**
+
+**Estensioni consigliate:**
+- `ms-vscode-remote.remote-ssh` - Remote - SSH (principale)
+- `ms-vscode-remote.remote-ssh-edit` - Remote - SSH: Editing Configuration Files
+- `ms-vscode.remote-explorer` - Remote Explorer
+
+![Remote SSH Extension](https://code.visualstudio.com/assets/docs/remote/ssh/ssh-extension.png)
+
+### Step 2: Configurare la Connessione SSH
+
+#### Metodo A: Usando il file SSH config (Raccomandato)
+
+1. Apri il Command Palette (Ctrl+Shift+P o Cmd+Shift+P)
+2. Digita: `Remote-SSH: Open SSH Configuration File...`
+3. Seleziona il file di configurazione (solitamente `~/.ssh/config`)
+4. Aggiungi la configurazione del server:
+
+```bash
+Host w4s
+    HostName w4s.filippobilardo.it
+    Port 2222
+    User cognome.nome
+    IdentityFile ~/.ssh/id_ed25519
+    ForwardAgent yes
+```
+
+**Spiegazione parametri:**
+- `Host`: nome alias per la connessione (puoi usare qualsiasi nome)
+- `HostName`: indirizzo IP o hostname del server
+- `Port`: porta SSH (default 22)
+- `User`: username sul server remoto
+- `IdentityFile`: percorso alla chiave privata SSH
+- `ForwardAgent`: permette di usare le chiavi SSH locali sul server remoto
+
+**Configurazione avanzata con più server:**
+```bash
+# Server di produzione
+Host prod-server
+    HostName w4s.filippobilardo.it
+    Port 2222
+    User cognome.nome
+    IdentityFile ~/.ssh/id_ed25519
+
+# Server di sviluppo
+Host dev-server
+    HostName dev.example.com
+    Port 22
+    User developer
+    IdentityFile ~/.ssh/id_rsa_dev
+
+# Raspberry Pi locale
+Host raspberry
+    HostName 192.168.1.50
+    Port 22
+    User pi
+```
+
+#### Metodo B: Connessione diretta
+
+1. Clicca sull'icona **Remote Explorer** nella sidebar (o premi F1)
+2. Seleziona **Remote-SSH: Connect to Host...**
+3. Digita: `ssh cognome.nome@w4s.filippobilardo.it -p 2222`
+4. Premi Invio
+
+---
+
+### Step 3: Connettersi al Server
+
+1. Apri il Command Palette (Ctrl+Shift+P)
+2. Digita: `Remote-SSH: Connect to Host...`
+3. Seleziona il tuo host dalla lista (es. `w4s`)
+4. Si aprirà una nuova finestra VS Code
+5. Se richiesto, inserisci la passphrase della chiave SSH
+6. Attendi il completamento della connessione
+
+**Indicatori di connessione:**
+- Angolo in basso a sinistra: vedrai `SSH: w4s` (colore verde)
+- Barra del titolo: mostra `[SSH: w4s]`
+
+### Step 4: Lavorare sul Server Remoto
+
+#### Aprire una cartella remota
+
+1. File → Open Folder (Ctrl+K Ctrl+O)
+2. Naviga alla cartella desiderata sul server
+3. Clicca **OK**
+
+Ora puoi:
+- ✅ Modificare file direttamente sul server
+- ✅ Creare/eliminare file e cartelle
+- ✅ Usare il terminale integrato (Terminal → New Terminal)
+- ✅ Installare estensioni sul server remoto
+- ✅ Eseguire debug di applicazioni
+
+#### Aprire un terminale remoto
+
+1. Terminal → New Terminal (Ctrl+` o Ctrl+J)
+2. Il terminale è già connesso al server!
+3. Esegui comandi come se fossi in SSH:
+
+```bash
+# Verifica dove sei
+pwd
+
+# Lista file
+ls -la
+
+# Installa pacchetti
+npm install
+pip install -r requirements.txt
+
+# Avvia applicazioni
+node server.js
+python app.py
+```
+
+#### Trasferire file
+
+**Upload file locale → server:**
+- Drag & drop file dall'Explorer nel pannello VS Code
+- Oppure: Tasto destro su cartella → Upload files
+
+**Download file server → locale:**
+- Tasto destro su file → Download
+- I file vengono salvati nella cartella locale che scegli
+
+### Step 5: Configurazioni Avanzate
+
+#### Installare estensioni sul server remoto
+
+Alcune estensioni devono essere installate anche sul server:
+
+1. Vai su Extensions (Ctrl+Shift+X)
+2. Vedrai due sezioni:
+   - **Local - Installed**: estensioni locali
+   - **SSH: w4s - Installed**: estensioni sul server
+3. Installa le estensioni necessarie nella sezione remota
+
+**Estensioni consigliate per il server:**
+- Python
+- Node.js Extension Pack
+- Docker
+- GitLens
+
+#### Port Forwarding
+
+Per accedere a servizi web in esecuzione sul server:
+
+1. Terminal → New Terminal
+2. Avvia l'applicazione (es. `node server.js` sulla porta 3000)
+3. VS Code rileva automaticamente la porta e chiede se fare forwarding
+4. Clicca **Forward Port**
+5. Apri `localhost:3000` nel browser locale
+
+**Port Forwarding manuale:**
+1. Command Palette → `Forward a Port`
+2. Inserisci il numero di porta (es. `3000`)
+3. La porta è ora accessibile localmente
+
+**Visualizzare porte forward:**
+- Pannello PORTS (accanto al terminale)
+- Mostra tutte le porte forward attive
+
+#### SSH Agent Forwarding
+
+Per usare le tue chiavi SSH locali sul server remoto (es. per git push):
+
+Nel file `~/.ssh/config`:
+```bash
+Host w4s
+    HostName w4s.filippobilardo.it
+    Port 2222
+    User cognome.nome
+    IdentityFile ~/.ssh/id_ed25519
+    ForwardAgent yes    # ← Importante!
+```
+
+Ora puoi fare git push dal server usando le tue chiavi locali!
+
+### Troubleshooting VS Code SSH
+
+#### Problema: "Could not establish connection"
+
+**Soluzione 1**: Verifica connessione SSH manuale
+```bash
+ssh cognome.nome@w4s.filippobilardo.it -p 2222
+```
+
+**Soluzione 2**: Controlla i log
+1. Command Palette → `Remote-SSH: Show Log`
+2. Cerca errori nel log
+
+**Soluzione 3**: Rimuovi server dai noti
+```bash
+ssh-keygen -R w4s.filippobilardo.it
+```
+
+#### Problema: "Permission denied (publickey)"
+
+**Causa**: Chiave SSH non configurata correttamente
+
+**Soluzione**:
+1. Verifica che la chiave pubblica sia sul server:
+   ```bash
+   ssh cognome.nome@w4s.filippobilardo.it -p 2222 "cat ~/.ssh/authorized_keys"
+   ```
+2. Verifica il percorso della chiave in `~/.ssh/config`:
+   ```bash
+   IdentityFile ~/.ssh/id_ed25519
+   ```
+3. Verifica permessi chiave:
+   ```bash
+   chmod 600 ~/.ssh/id_ed25519
+   ```
+
+#### Problema: "VS Code Server failed to start"
+
+**Soluzione**: Rimuovi la cache del server
+```bash
+ssh cognome.nome@w4s.filippobilardo.it -p 2222 "rm -rf ~/.vscode-server"
+```
+Poi riconnetti da VS Code.
+
+#### Problema: Connessione lenta
+
+**Causa**: Estensioni pesanti installate sul server
+
+**Soluzione**:
+1. Disabilita estensioni non necessarie sul server
+2. Usa il parametro `remote.SSH.useLocalServer: false` nelle impostazioni
+
+#### Problema: "Bad owner or permissions on config file"
+
+**Causa**: Permessi errati sul file `~/.ssh/config`
+
+**Soluzione**:
+```bash
+chmod 600 ~/.ssh/config
+```
+
+### Best Practices VS Code + SSH
+
+✅ **Usa il file config**: Più comodo di ricordare comandi lunghi  
+✅ **Forward Agent**: Abilita `ForwardAgent yes` per usare chiavi locali  
+✅ **Estensioni minime**: Installa solo le estensioni necessarie sul server  
+✅ **Salva automaticamente**: Abilita Auto Save (File → Auto Save)  
+✅ **Multiple workspace**: Usa workspace per progetti diversi  
+✅ **Git integrato**: Usa il source control integrato di VS Code  
+
+### Shortcuts Utili
+
+| Comando | Shortcut | Descrizione |
+|---------|----------|-------------|
+| Command Palette | Ctrl+Shift+P | Apre il menu comandi |
+| Open Folder | Ctrl+K Ctrl+O | Apre cartella remota |
+| New Terminal | Ctrl+` | Nuovo terminale SSH |
+| Toggle Sidebar | Ctrl+B | Mostra/nascondi sidebar |
+| Quick Open | Ctrl+P | Cerca file velocemente |
+| Go to Line | Ctrl+G | Vai a linea specifica |
+| Search | Ctrl+Shift+F | Cerca nel progetto |
+| Save All | Ctrl+K S | Salva tutti i file |
+
+### Workflow Completo: Esempio Pratico
+
+**Scenario**: Sviluppare un'applicazione Node.js sul server remoto
+
+#### 1. Connetti al server
+```
+Command Palette → Remote-SSH: Connect to Host → w4s
+```
+
+#### 2. Apri cartella progetto
+```
+File → Open Folder → /home/cognome.nome/progetti/mio-app
+```
+
+#### 3. Installa estensioni sul server
+- Installa "JavaScript and TypeScript" extension sul server
+
+#### 4. Apri terminale integrato
+```
+Terminal → New Terminal
+```
+
+#### 5. Inizializza progetto
+```bash
+npm init -y
+npm install express
+```
+
+#### 6. Crea file server.js
+```javascript
+const express = require('express');
+const app = express();
+const PORT = 3000;
+
+app.get('/', (req, res) => {
+    res.send('Hello from remote server!');
+});
+
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});
+```
+
+#### 7. Avvia applicazione
+```bash
+node server.js
+```
+
+#### 8. VS Code rileva porta 3000
+- Clicca **Forward Port** quando richiesto
+
+#### 9. Testa nel browser locale
+```
+http://localhost:3000
+```
+
+#### 10. Commit e push
+```bash
+git add .
+git commit -m "Initial commit"
+git push origin main
+```
+
+Tutto fatto direttamente da VS Code! 🚀
 
 ---
 
@@ -741,410 +1090,6 @@ ssh -vT -p 2222 cognome.nome@w4s.filippobilardo.it
 
 ---
 
-## Utilizzo di VS Code con SSH
-
-Visual Studio Code offre un'eccellente integrazione con SSH tramite l'estensione **Remote - SSH**, che permette di sviluppare direttamente su server remoti come se fossero in locale.
-
-### Vantaggi di VS Code Remote - SSH
-
-✅ **Sviluppo remoto**: Modifica file direttamente sul server  
-✅ **Terminale integrato**: Esegui comandi sul server  
-✅ **Debug remoto**: Debug applicazioni sul server  
-✅ **Estensioni**: Usa le tue estensioni VS Code sul server  
-✅ **Sincronizzazione automatica**: Nessun bisogno di FTP/SCP manuale  
-✅ **Performance**: Il codice viene eseguito sul server, solo l'interfaccia è locale  
-
----
-
-### Step 1: Installare l'Estensione Remote - SSH
-
-1. Apri **VS Code**
-2. Vai su **Extensions** (Ctrl+Shift+X o Cmd+Shift+X)
-3. Cerca **"Remote - SSH"**
-4. Installa l'estensione pubblicata da **Microsoft**
-
-**Estensioni consigliate:**
-- `ms-vscode-remote.remote-ssh` - Remote - SSH (principale)
-- `ms-vscode-remote.remote-ssh-edit` - Remote - SSH: Editing Configuration Files
-- `ms-vscode.remote-explorer` - Remote Explorer
-
-![Remote SSH Extension](https://code.visualstudio.com/assets/docs/remote/ssh/ssh-extension.png)
-
----
-
-### Step 2: Configurare la Connessione SSH
-
-#### Metodo A: Usando il file SSH config (Raccomandato)
-
-1. Apri il Command Palette (Ctrl+Shift+P o Cmd+Shift+P)
-2. Digita: `Remote-SSH: Open SSH Configuration File...`
-3. Seleziona il file di configurazione (solitamente `~/.ssh/config`)
-4. Aggiungi la configurazione del server:
-
-```bash
-Host w4s
-    HostName w4s.filippobilardo.it
-    Port 2222
-    User cognome.nome
-    IdentityFile ~/.ssh/id_ed25519
-    ForwardAgent yes
-```
-
-**Spiegazione parametri:**
-- `Host`: nome alias per la connessione (puoi usare qualsiasi nome)
-- `HostName`: indirizzo IP o hostname del server
-- `Port`: porta SSH (default 22)
-- `User`: username sul server remoto
-- `IdentityFile`: percorso alla chiave privata SSH
-- `ForwardAgent`: permette di usare le chiavi SSH locali sul server remoto
-
-**Configurazione avanzata con più server:**
-```bash
-# Server di produzione
-Host prod-server
-    HostName w4s.filippobilardo.it
-    Port 2222
-    User cognome.nome
-    IdentityFile ~/.ssh/id_ed25519
-
-# Server di sviluppo
-Host dev-server
-    HostName dev.example.com
-    Port 22
-    User developer
-    IdentityFile ~/.ssh/id_rsa_dev
-
-# Raspberry Pi locale
-Host raspberry
-    HostName 192.168.1.50
-    Port 22
-    User pi
-    IdentityFile ~/.ssh/id_rsa
-```
-
-#### Metodo B: Connessione diretta
-
-1. Clicca sull'icona **Remote Explorer** nella sidebar (o premi F1)
-2. Seleziona **Remote-SSH: Connect to Host...**
-3. Digita: `ssh cognome.nome@w4s.filippobilardo.it -p 2222`
-4. Premi Invio
-
----
-
-### Step 3: Connettersi al Server
-
-1. Apri il Command Palette (Ctrl+Shift+P)
-2. Digita: `Remote-SSH: Connect to Host...`
-3. Seleziona il tuo host dalla lista (es. `w4s`)
-4. Si aprirà una nuova finestra VS Code
-5. Se richiesto, inserisci la passphrase della chiave SSH
-6. Attendi il completamento della connessione
-
-**Indicatori di connessione:**
-- Angolo in basso a sinistra: vedrai `SSH: w4s` (colore verde)
-- Barra del titolo: mostra `[SSH: w4s]`
-
----
-
-### Step 4: Lavorare sul Server Remoto
-
-#### Aprire una cartella remota
-
-1. File → Open Folder (Ctrl+K Ctrl+O)
-2. Naviga alla cartella desiderata sul server
-3. Clicca **OK**
-
-Ora puoi:
-- ✅ Modificare file direttamente sul server
-- ✅ Creare/eliminare file e cartelle
-- ✅ Usare il terminale integrato (Terminal → New Terminal)
-- ✅ Installare estensioni sul server remoto
-- ✅ Eseguire debug di applicazioni
-
-#### Aprire un terminale remoto
-
-1. Terminal → New Terminal (Ctrl+` o Ctrl+J)
-2. Il terminale è già connesso al server!
-3. Esegui comandi come se fossi in SSH:
-
-```bash
-# Verifica dove sei
-pwd
-
-# Lista file
-ls -la
-
-# Installa pacchetti
-npm install
-pip install -r requirements.txt
-
-# Avvia applicazioni
-node server.js
-python app.py
-```
-
-#### Trasferire file
-
-**Upload file locale → server:**
-- Drag & drop file dall'Explorer nel pannello VS Code
-- Oppure: Tasto destro su cartella → Upload files
-
-**Download file server → locale:**
-- Tasto destro su file → Download
-- I file vengono salvati nella cartella locale che scegli
-
----
-
-### Step 5: Configurazioni Avanzate
-
-#### Installare estensioni sul server remoto
-
-Alcune estensioni devono essere installate anche sul server:
-
-1. Vai su Extensions (Ctrl+Shift+X)
-2. Vedrai due sezioni:
-   - **Local - Installed**: estensioni locali
-   - **SSH: w4s - Installed**: estensioni sul server
-3. Installa le estensioni necessarie nella sezione remota
-
-**Estensioni consigliate per il server:**
-- Python
-- Node.js Extension Pack
-- Docker
-- GitLens
-
-#### Port Forwarding
-
-Per accedere a servizi web in esecuzione sul server:
-
-1. Terminal → New Terminal
-2. Avvia l'applicazione (es. `node server.js` sulla porta 3000)
-3. VS Code rileva automaticamente la porta e chiede se fare forwarding
-4. Clicca **Forward Port**
-5. Apri `localhost:3000` nel browser locale
-
-**Port Forwarding manuale:**
-1. Command Palette → `Forward a Port`
-2. Inserisci il numero di porta (es. `3000`)
-3. La porta è ora accessibile localmente
-
-**Visualizzare porte forward:**
-- Pannello PORTS (accanto al terminale)
-- Mostra tutte le porte forward attive
-
-#### SSH Agent Forwarding
-
-Per usare le tue chiavi SSH locali sul server remoto (es. per git push):
-
-Nel file `~/.ssh/config`:
-```bash
-Host w4s
-    HostName w4s.filippobilardo.it
-    Port 2222
-    User cognome.nome
-    IdentityFile ~/.ssh/id_ed25519
-    ForwardAgent yes    # ← Importante!
-```
-
-Ora puoi fare git push dal server usando le tue chiavi locali!
-
----
-
-### Troubleshooting VS Code SSH
-
-#### Problema: "Could not establish connection"
-
-**Soluzione 1**: Verifica connessione SSH manuale
-```bash
-ssh cognome.nome@w4s.filippobilardo.it -p 2222
-```
-
-**Soluzione 2**: Controlla i log
-1. Command Palette → `Remote-SSH: Show Log`
-2. Cerca errori nel log
-
-**Soluzione 3**: Rimuovi server dai noti
-```bash
-ssh-keygen -R w4s.filippobilardo.it
-```
-
-#### Problema: "Permission denied (publickey)"
-
-**Causa**: Chiave SSH non configurata correttamente
-
-**Soluzione**:
-1. Verifica che la chiave pubblica sia sul server:
-   ```bash
-   ssh cognome.nome@w4s.filippobilardo.it -p 2222 "cat ~/.ssh/authorized_keys"
-   ```
-2. Verifica il percorso della chiave in `~/.ssh/config`:
-   ```bash
-   IdentityFile ~/.ssh/id_ed25519
-   ```
-3. Verifica permessi chiave:
-   ```bash
-   chmod 600 ~/.ssh/id_ed25519
-   ```
-
-#### Problema: "VS Code Server failed to start"
-
-**Soluzione**: Rimuovi la cache del server
-```bash
-ssh cognome.nome@w4s.filippobilardo.it -p 2222 "rm -rf ~/.vscode-server"
-```
-Poi riconnetti da VS Code.
-
-#### Problema: Connessione lenta
-
-**Causa**: Estensioni pesanti installate sul server
-
-**Soluzione**:
-1. Disabilita estensioni non necessarie sul server
-2. Usa il parametro `remote.SSH.useLocalServer: false` nelle impostazioni
-
-#### Problema: "Bad owner or permissions on config file"
-
-**Causa**: Permessi errati sul file `~/.ssh/config`
-
-**Soluzione**:
-```bash
-chmod 600 ~/.ssh/config
-```
-
----
-
-### Best Practices VS Code + SSH
-
-✅ **Usa il file config**: Più comodo di ricordare comandi lunghi  
-✅ **Forward Agent**: Abilita `ForwardAgent yes` per usare chiavi locali  
-✅ **Estensioni minime**: Installa solo le estensioni necessarie sul server  
-✅ **Salva automaticamente**: Abilita Auto Save (File → Auto Save)  
-✅ **Multiple workspace**: Usa workspace per progetti diversi  
-✅ **Git integrato**: Usa il source control integrato di VS Code  
-
----
-
-### Shortcuts Utili
-
-| Comando | Shortcut | Descrizione |
-|---------|----------|-------------|
-| Command Palette | Ctrl+Shift+P | Apre il menu comandi |
-| Open Folder | Ctrl+K Ctrl+O | Apre cartella remota |
-| New Terminal | Ctrl+` | Nuovo terminale SSH |
-| Toggle Sidebar | Ctrl+B | Mostra/nascondi sidebar |
-| Quick Open | Ctrl+P | Cerca file velocemente |
-| Go to Line | Ctrl+G | Vai a linea specifica |
-| Search | Ctrl+Shift+F | Cerca nel progetto |
-| Save All | Ctrl+K S | Salva tutti i file |
-
----
-
-### Workflow Completo: Esempio Pratico
-
-**Scenario**: Sviluppare un'applicazione Node.js sul server remoto
-
-#### 1. Connetti al server
-```
-Command Palette → Remote-SSH: Connect to Host → w4s
-```
-
-#### 2. Apri cartella progetto
-```
-File → Open Folder → /home/cognome.nome/progetti/mio-app
-```
-
-#### 3. Installa estensioni sul server
-- Installa "JavaScript and TypeScript" extension sul server
-
-#### 4. Apri terminale integrato
-```
-Terminal → New Terminal
-```
-
-#### 5. Inizializza progetto
-```bash
-npm init -y
-npm install express
-```
-
-#### 6. Crea file server.js
-```javascript
-const express = require('express');
-const app = express();
-const PORT = 3000;
-
-app.get('/', (req, res) => {
-    res.send('Hello from remote server!');
-});
-
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-});
-```
-
-#### 7. Avvia applicazione
-```bash
-node server.js
-```
-
-#### 8. VS Code rileva porta 3000
-- Clicca **Forward Port** quando richiesto
-
-#### 9. Testa nel browser locale
-```
-http://localhost:3000
-```
-
-#### 10. Commit e push
-```bash
-git add .
-git commit -m "Initial commit"
-git push origin main
-```
-
-Tutto fatto direttamente da VS Code! 🚀
-
----
-
-### Configurazione SSH Config Completa
-
-Esempio di configurazione avanzata per `~/.ssh/config`:
-
-```bash
-# Server principale di lavoro
-Host w4s
-    HostName w4s.filippobilardo.it
-    Port 2222
-    User cognome.nome
-    IdentityFile ~/.ssh/id_ed25519
-    ForwardAgent yes
-    ServerAliveInterval 60
-    ServerAliveCountMax 3
-    Compression yes
-    
-# Server di backup
-Host backup
-    HostName backup.example.com
-    Port 22
-    User admin
-    IdentityFile ~/.ssh/id_rsa_backup
-    
-# Tutti gli host: impostazioni predefinite
-Host *
-    AddKeysToAgent yes
-    UseKeychain yes  # Solo macOS
-    IdentitiesOnly yes
-    LogLevel ERROR
-```
-
-**Parametri aggiuntivi:**
-- `ServerAliveInterval 60`: invia pacchetto ogni 60 secondi per mantenere connessione
-- `ServerAliveCountMax 3`: numero massimo di tentativi prima di disconnessione
-- `Compression yes`: comprime i dati (utile con connessioni lente)
-- `AddKeysToAgent yes`: aggiunge automaticamente chiavi all'agent
-- `IdentitiesOnly yes`: usa solo chiavi specificate nel config
-
----
 
 ## Esercizi
 
