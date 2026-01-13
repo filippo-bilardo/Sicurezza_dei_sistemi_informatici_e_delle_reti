@@ -5,7 +5,7 @@ SSH (Secure Shell) è un protocollo crittografico utilizzato per comunicare in m
 ## Indice
 1. [Introduzione teorica](#introduzione-teorica)
 2. [Prerequisiti](#prerequisiti)
-3. [Esercitazione Pratica 1](#esercitazione-pratica-1---ssh-con-chiave-pubblica/privata)
+3. [Esercitazione Pratica 1](#esercitazione-pratica-1---ssh-con-chiave-pubblica-privata)
 4. [Esercitazione Pratica 2](#esercitazione-pratica-2---config-per-semplificare-la-connessione-ssh)
 5. [Verifica e Troubleshooting](#verifica-e-troubleshooting)
 6. [Esercizi](#esercizi)
@@ -226,7 +226,7 @@ OpenSSH_8.9p1 Ubuntu-3ubuntu0.1, OpenSSL 3.0.2 15 Mar 2022
 
 ---
 
-## Esercitazione Pratica 1 - SSH con Chiave Pubblica/Privata 
+## Esercitazione Pratica 1 - SSH con Chiave Pubblica-Privata 
 
 ### Step 1: Generare la Coppia di Chiavi
 
