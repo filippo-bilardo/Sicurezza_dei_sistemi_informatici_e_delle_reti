@@ -2,7 +2,7 @@
 
 > **Corso**: Sistemi e Reti 3  
 > **Autore**: Prof. Filippo Bilardo  
-> **Anno Accademico**: 2025/2025
+> **Anno Accademico**: 2025/2026
 
 ---
 
