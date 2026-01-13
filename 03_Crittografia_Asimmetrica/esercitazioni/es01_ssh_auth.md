@@ -4,11 +4,11 @@ SSH (Secure Shell) è un protocollo crittografico utilizzato per comunicare in m
 
 ## Indice
 1. [Introduzione teorica](#introduzione-teorica)
-3. [Prerequisiti](#prerequisiti)
-4. [Esercitazione Pratica](#esercitazione-pratica)
+2. [Prerequisiti](#prerequisiti)
+3. [Esercitazione Pratica 1](#esercitazione1)
+4. [Esercitazione Pratica 2](#esercitazione2)
 5. [Verifica e Troubleshooting](#verifica-e-troubleshooting)
-6. [Utilizzo di VS Code con SSH](#utilizzo-di-vs-code-con-ssh)
-7. [Esercizi](#esercizi)
+6. [Esercizi](#esercizi)
 
 
 ## Obiettivi della Lezione
@@ -226,7 +226,7 @@ OpenSSH_8.9p1 Ubuntu-3ubuntu0.1, OpenSSL 3.0.2 15 Mar 2022
 
 ---
 
-## Esercitazione Pratica 1 - SSH con Chiave Pubblica/Privata
+## Esercitazione Pratica 1 - SSH con Chiave Pubblica/Privata {#esercitazione1}
 
 ### Step 1: Generare la Coppia di Chiavi
 
@@ -405,7 +405,7 @@ Enter passphrase for key '/home/user/.ssh/id_ed25519':
 ✅ Se riesci ad accedere senza inserire la password del server, l'autenticazione con chiavi funziona correttamente!
 
 
-## Esercitazione Pratica 2 - config per semplificare la connessione SSH
+## Esercitazione Pratica 2 - config per semplificare la connessione SSH {#esercitazione2}
 
 ### Configurare il file config
 Dal prompt dei comandi di windows (Git Bash, PowerShell) o terminale Linux/macOS:
