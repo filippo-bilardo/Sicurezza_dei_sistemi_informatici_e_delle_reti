@@ -1,15 +1,15 @@
-# Capitolo 38 - Laboratorio - Crittografia Simmetrica
+# Capitolo 36 - Gestione delle Chiavi
 
-> **PARTE 11 - CRITTOGRAFIA**
+> **PARTE 10 - CRITTOGRAFIA**
 
 ---
 
 ## Introduzione
 
-Questo capitolo copre **Laboratorio - Crittografia Simmetrica**.
+Questo capitolo copre **Gestione delle Chiavi**.
 
 ### Obiettivi di Apprendimento
-- Comprendere i concetti fondamentali di Laboratorio - Crittografia Simmetrica
+- Comprendere i concetti fondamentali di Gestione delle Chiavi
 - Applicare le tecniche in scenari pratici
 - Implementare soluzioni sicure
 
@@ -62,13 +62,13 @@ def example_function():
 
 ## Esercizi
 
-### Esercizio 38.1 (★☆☆)
+### Esercizio 36.1 (★☆☆)
 [Descrizione esercizio]
 
-### Esercizio 38.2 (★★☆)
+### Esercizio 36.2 (★★☆)
 [Descrizione esercizio]
 
-### Esercizio 38.3 (★★★)
+### Esercizio 36.3 (★★★)
 [Descrizione esercizio]
 
 ---
@@ -88,5 +88,5 @@ def example_function():
 
 ---
 
-**Capitolo Precedente**: [37 - Precedente](#)  
-**Prossimo Capitolo**: [39 - Successivo](#)
+**Capitolo Precedente**: [35 - Precedente](#)  
+**Prossimo Capitolo**: [37 - Successivo](#)

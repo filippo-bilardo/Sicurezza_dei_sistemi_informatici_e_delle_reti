@@ -1,4 +1,4 @@
-# Capitolo 34 - Hardware Security
+# Capitolo 33 - Quantum Cryptography
 
 > **PARTE 9 - CRITTOGRAFIA**
 
@@ -6,10 +6,10 @@
 
 ## Introduzione
 
-Questo capitolo copre **Hardware Security**.
+Questo capitolo copre **Quantum Cryptography**.
 
 ### Obiettivi di Apprendimento
-- Comprendere i concetti fondamentali di Hardware Security
+- Comprendere i concetti fondamentali di Quantum Cryptography
 - Applicare le tecniche in scenari pratici
 - Implementare soluzioni sicure
 
@@ -62,13 +62,13 @@ def example_function():
 
 ## Esercizi
 
-### Esercizio 34.1 (★☆☆)
+### Esercizio 33.1 (★☆☆)
 [Descrizione esercizio]
 
-### Esercizio 34.2 (★★☆)
+### Esercizio 33.2 (★★☆)
 [Descrizione esercizio]
 
-### Esercizio 34.3 (★★★)
+### Esercizio 33.3 (★★★)
 [Descrizione esercizio]
 
 ---
@@ -88,5 +88,5 @@ def example_function():
 
 ---
 
-**Capitolo Precedente**: [33 - Precedente](#)  
-**Prossimo Capitolo**: [35 - Successivo](#)
+**Capitolo Precedente**: [32 - Precedente](#)  
+**Prossimo Capitolo**: [34 - Successivo](#)

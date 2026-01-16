@@ -1,15 +1,15 @@
-# Capitolo 36 - Gestione delle Chiavi
+# Capitolo 34 - Hardware Security
 
-> **PARTE 10 - CRITTOGRAFIA**
+> **PARTE 9 - CRITTOGRAFIA**
 
 ---
 
 ## Introduzione
 
-Questo capitolo copre **Gestione delle Chiavi**.
+Questo capitolo copre **Hardware Security**.
 
 ### Obiettivi di Apprendimento
-- Comprendere i concetti fondamentali di Gestione delle Chiavi
+- Comprendere i concetti fondamentali di Hardware Security
 - Applicare le tecniche in scenari pratici
 - Implementare soluzioni sicure
 
@@ -62,13 +62,13 @@ def example_function():
 
 ## Esercizi
 
-### Esercizio 36.1 (★☆☆)
+### Esercizio 34.1 (★☆☆)
 [Descrizione esercizio]
 
-### Esercizio 36.2 (★★☆)
+### Esercizio 34.2 (★★☆)
 [Descrizione esercizio]
 
-### Esercizio 36.3 (★★★)
+### Esercizio 34.3 (★★★)
 [Descrizione esercizio]
 
 ---
@@ -88,5 +88,5 @@ def example_function():
 
 ---
 
-**Capitolo Precedente**: [35 - Precedente](#)  
-**Prossimo Capitolo**: [37 - Successivo](#)
+**Capitolo Precedente**: [33 - Precedente](#)  
+**Prossimo Capitolo**: [35 - Successivo](#)
