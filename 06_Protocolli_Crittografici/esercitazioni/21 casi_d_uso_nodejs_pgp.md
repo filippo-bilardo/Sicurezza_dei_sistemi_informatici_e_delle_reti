@@ -1,3 +1,4 @@
+# Casi d'uso reali per Node.js + PGP
 Ecco una serie di possibili **casi d'uso reali** in cui integrare PGP (tramite Node.js e OpenPGP.js) può portare valore concreto a un'applicazione. Ogni caso include una breve descrizione del problema e come Node.js + PGP possono risolverlo, con spunti implementativi.
 
 ---

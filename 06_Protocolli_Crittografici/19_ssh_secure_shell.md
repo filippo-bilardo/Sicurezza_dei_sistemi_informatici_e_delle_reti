@@ -263,6 +263,17 @@ HostCertificate /etc/ssh/ssh_host_ed25519_key-cert.pub
 
 ---
 
+## Utilità del file `~/.ssh/config`
+
+Il file di configurazione SSH permette di:
+
+- **Semplificare i comandi**: Usare alias (es. `ssh prod`) invece di specificare ogni volta host, utente e porta
+- **Gestire multiple identità**: Associare chiavi SSH diverse a server differenti per isolamento e sicurezza
+- **Centralizzare le impostazioni**: Configurare opzioni comuni (porta personalizzata, inoltro di agenti, timeout) in un'unica posizione
+- **Migliorare la produttività**: Ridurre errori di digitazione e velocizzare l'accesso ai server
+- **Configurare jump server**: Permettere connessioni attraverso bastion host per accedere a server in reti private
+- **Abilitare funzionalità avanzate**: ForwardAgent, X11Forwarding e altre opzioni per ambienti complessi
+
 ## Configurazione Client
 
 File: `~/.ssh/config`
