@@ -8,7 +8,7 @@
 
 ## 📚 Indice Generale
 
-### **PARTE 0 - FONDAMENTI DI SICUREZZA INFORMATICA**
+### **0 - FONDAMENTI DI SICUREZZA INFORMATICA**
 
 #### 0. Introduzione alla Sicurezza Informatica
    - 0.1 Concetti Base di Sicurezza
@@ -34,7 +34,7 @@
 
 ---
 
-### **PARTE 1 - FONDAMENTI DI CRITTOGRAFIA**
+### **1 - FONDAMENTI DI CRITTOGRAFIA**
 
 #### 1. Introduzione alla Crittografia
    - 1.1 Cos'è la Crittografia
@@ -66,7 +66,7 @@
 
 ---
 
-### **PARTE 2 - CRITTOGRAFIA SIMMETRICA**
+### **2 - CRITTOGRAFIA SIMMETRICA**
 
 #### 3. Introduzione alla Crittografia Simmetrica
    - 3.1 Concetti Base
@@ -112,7 +112,7 @@
 
 ---
 
-### **PARTE 3 - CRITTOGRAFIA ASIMMETRICA**
+### **3 - CRITTOGRAFIA ASIMMETRICA**
 
 #### 7. Introduzione alla Crittografia Asimmetrica
    - 7.1 Concetto di Chiave Pubblica e Privata
@@ -158,7 +158,7 @@
 
 ---
 
-### **PARTE 4 - FUNZIONI HASH E INTEGRITÀ**
+### **4 - FUNZIONI HASH E INTEGRITÀ**
 
 #### 12. Funzioni Hash Crittografiche
    - 12.1 Proprietà delle Funzioni Hash
@@ -195,7 +195,7 @@
 
 ---
 
-### **PARTE 5 - CERTIFICATI DIGITALI E PKI**
+### **5 - CERTIFICATI DIGITALI E PKI**
 
 #### 15. Certificati Digitali
    - 15.1 Cos'è un Certificato Digitale
@@ -234,7 +234,7 @@
 
 ---
 
-### **PARTE 6 - PROTOCOLLI CRITTOGRAFICI**
+### **6 - PROTOCOLLI CRITTOGRAFICI**
 
 #### 18. SSL/TLS (Secure Sockets Layer / Transport Layer Security)
    - 18.1 Storia di SSL/TLS
@@ -293,7 +293,7 @@
 
 ---
 
-### **PARTE 7 - APPLICAZIONI PRATICHE**
+### **7 - APPLICAZIONI PRATICHE**
 
 #### 23. Password Security
    - 23.1 Password Hashing
@@ -346,7 +346,7 @@
 
 ---
 
-### **PARTE 8 - IMPLEMENTAZIONE E TOOLS**
+### **8 - IMPLEMENTAZIONE E TOOLS**
 
 #### 28. Librerie Crittografiche
    - 28.1 OpenSSL
@@ -377,7 +377,7 @@
 
 ---
 
-### **PARTE 9 - MALWARE E MINACCE INFORMATICHE**
+### **9 - MALWARE E MINACCE INFORMATICHE**
 
 #### 31. Tipologie di Malware
    - 31.1 Virus Informatici
@@ -424,7 +424,7 @@
 
 ---
 
-### **PARTE 10 - ATTACCHI E DIFESE DI RETE**
+### **10 - ATTACCHI E DIFESE DI RETE**
 
 #### 33. Attacchi di Rete Comuni
    - 33.1 Phishing e Social Engineering
@@ -505,9 +505,36 @@
    - 38.4 Smart Cards
    - 38.5 YubiKey e Security Keys
 
----
+#### 39. Network Reconnaissance e Scanning**
+- 01 Passive Reconnaissance (OSINT, Shodan, Censys)
+- 02 Active Scanning (Nmap, tecniche di fingerprinting)
+- 03 Network Topology Mapping
+- 04 Service Enumeration
+- 05 Difese contro il Reconnaissance
 
-### **PARTE 10 - COMPLIANCE E STANDARD**
+#### 40. Attacchi Wireless**
+- WEP, WPA, WPA2, WPA3 dal punto di vista offensivo
+- Evil Twin / Rogue Access Point
+- Deauthentication Attacks
+- PMKID Attack
+- Captive Portal bypass
+
+#### 41. Zero Trust Architecture**
+- Principio "Never trust, always verify"
+- Microsegmentazione
+- Identity-Aware Proxy
+- Software-Defined Perimeter (SDP)
+- Confronto con modello perimetrale tradizionale
+
+#### 42. DNS Security**
+- 01 DNS Spoofing e Cache Poisoning
+- 02 DNSSEC (DNS Security Extensions)
+- 03 DNS over HTTPS (DoH) e DNS over TLS (DoT)
+- 04 DNS Tunneling (vettore di exfiltration)
+- 05 RPZ (Response Policy Zones)
+
+
+### **11 - COMPLIANCE E STANDARD**
 
 #### 39. Standard e Normative
    - 39.1 NIST Guidelines
@@ -559,7 +586,7 @@
 
 ---
 
-### **PARTE 12 - ESERCITAZIONI PRATICHE**
+### **12 - ESERCITAZIONI PRATICHE**
 
 #### 42. Laboratorio: Crittografia Simmetrica
    - 42.1 Esercizio: Cifratura AES con OpenSSL
@@ -578,8 +605,8 @@
    - 44.1 Esercizio: Calcolo Hash di File
    - 44.2 Esercizio: Verifica Integrità
    - 44.3 Esercizio: Implementazione HMAC
-   - 40.4 Esercizio: Password Hashing con bcrypt
-   - 40.5 Esercizio: Collisioni MD5
+   - 44.4 Esercizio: Password Hashing con bcrypt
+   - 44.5 Esercizio: Collisioni MD5
 
 #### 41. Laboratorio: Certificati e TLS
    - 41.1 Esercizio: Creazione CA Privata
@@ -625,7 +652,7 @@
 
 ---
 
-### **PARTE 13 - PROGETTI E CASI DI STUDIO**
+### **13 - PROGETTI E CASI DI STUDIO**
 
 #### 51. Progetti Guidati
    - 51.1 Progetto: Chat Cifrata End-to-End
@@ -657,6 +684,84 @@
    - 53.5 Spectre/Meltdown (2018)
    - 53.6 BlueKeep (2019)
    - 53.7 Zerologon (2020)
+
+---
+
+
+
+
+---
+
+#### 12. Funzioni Hash Crittografiche
+   - 12.1 Proprietà delle Funzioni Hash
+     - 12.1.1 Determinismo
+     - 12.1.2 Resistenza alle Collisioni
+     - 12.1.3 Effetto Valanga
+     - 12.1.4 One-Way Function
+   - 12.2 MD5 (Message Digest 5)
+     - 12.2.1 Funzionamento
+     - 12.2.2 Vulnerabilità
+   - 12.3 SHA (Secure Hash Algorithm)
+     - 12.3.1 SHA-1
+     - 12.3.2 SHA-2 (SHA-256, SHA-512)
+     - 12.3.3 SHA-3
+   - 12.4 BLAKE2 e BLAKE3
+   - 12.5 Applicazioni
+     - 12.5.1 Verifica Integrità File
+     - 12.5.2 Password Hashing
+     - 12.5.3 Blockchain
+
+#### 13. HMAC (Hash-based Message Authentication Code)
+   - 13.1 Principi di Funzionamento
+   - 13.2 Costruzione di HMAC
+   - 13.3 HMAC-SHA256
+   - 13.4 Applicazioni
+   - 13.5 Confronto con Firma Digitale
+
+#### 14. Message Authentication Code (MAC)
+   - 14.1 Autenticazione dei Messaggi
+   - 14.2 CBC-MAC
+   - 14.3 CMAC
+   - 14.4 GMAC
+   - 14.5 Poly1305
+
+---
+
+### **14 - SICUREZZA DELL'INFRASTRUTTURA DI RETE**
+#### **01 — Network Segmentation e VLAN Security**
+- [01 VLAN e 802.1Q](14_Sicurezza_Infrastruttura_Rete/03-VLAN_Security/01_vlan_e_8021q.md)
+- [02 Configurazione delle VLAN](14_Sicurezza_Infrastruttura_Rete/03-VLAN_Security/02_configurazione_vlan.md)
+- [03 VTP e l’Inter-VLAN Routing](14_Sicurezza_Infrastruttura_Rete/03-VLAN_Security/03_vtp_e_intervlan_routing.md)
+- [04 VLAN e Sicurezza](14_Sicurezza_Infrastruttura_Rete/03-VLAN_Security/04_vlan_e_sicurezza.md)
+
+
+#### **02 — VPN e Accesso Remoto Sicuro**
+- [01 Le VPN](14_Sicurezza_Infrastruttura_Rete/02-VPN/01_le_vpn.md)
+- [02 SSL VPN](14_Sicurezza_Infrastruttura_Rete/02-VPN/02_ssl_vpn.md)
+- [03 IPsec VPN](14_Sicurezza_Infrastruttura_Rete/02-VPN/03_ipsec_vpn.md)
+- [04 OpenVPN](14_Sicurezza_Infrastruttura_Rete/02-VPN/04_openvpn.md)
+- [05 WireGuard](14_Sicurezza_Infrastruttura_Rete/02-VPN/05_wireguard.md) *(modernissimo, molto richiesto)*
+- [06 Split Tunneling](14_Sicurezza_Infrastruttura_Rete/02-VPN/06_split_tunneling.md)
+- [07 VPN Kill Switch e DNS Leak](14_Sicurezza_Infrastruttura_Rete/02-VPN/07_vpn_kill_switch_e_dns_leak.md)
+- [08 Normativa e Implicazioni Legali](14_Sicurezza_Infrastruttura_Rete/02-VPN/08_normativa_implicazioni_legali.md)
+- [09 Modelli di Accesso Remoto Sicuro](14_Sicurezza_Infrastruttura_Rete/02-VPN/09_modelli_accesso_remoto_sicuro.md)
+---
+
+### **15 - CLOUD E SICUREZZA MODERNA**
+#### **01 — Cloud Security**
+- 54.1 Modello di responsabilità condivisa (AWS/Azure/GCP)
+- 54.2 Identity and Access Management (IAM)
+- 54.3 Security Groups e Network ACL
+- 54.4 Cloud Security Posture Management (CSPM)
+- 54.5 Container Security (Docker, Kubernetes)
+
+#### **02 — SIEM e Threat Hunting**
+*(§41.6 accenna al SOC ma manca la parte operativa)*
+- 55.1 Log Aggregation e Correlation
+- 55.2 Splunk, Elastic SIEM, Wazuh
+- 55.3 Sigma Rules
+- 55.4 MITRE ATT&CK Framework
+- 55.5 Threat Hunting metodologie
 
 ---
 
