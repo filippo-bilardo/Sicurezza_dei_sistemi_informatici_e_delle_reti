@@ -1,7 +1,7 @@
-# Capitolo 49.3 - IPsec VPN
+# Capitolo 03 - IPsec VPN
 
 > **PARTE 14 - SICUREZZA DELL'INFRASTRUTTURA DI RETE**  
-> **Capitolo 49 — VPN e Accesso Remoto Sicuro**
+> **Capitolo 03 — VPN e Accesso Remoto Sicuro**
 
 ---
 
@@ -434,5 +434,5 @@ aggressive=yes           # Espone hash PSK → dizionario offline
 
 ---
 
-**Sezione Precedente**: [49.2 - SSL VPN](./49_2_ssl_vpn.md)  
-**Prossima Sezione**: [49.4 - OpenVPN](./49_3_openvpn.md)
+**Sezione Precedente**: [02 - SSL VPN](./02_ssl_vpn.md)  
+**Prossima Sezione**: [04 - OpenVPN](./04_openvpn.md)

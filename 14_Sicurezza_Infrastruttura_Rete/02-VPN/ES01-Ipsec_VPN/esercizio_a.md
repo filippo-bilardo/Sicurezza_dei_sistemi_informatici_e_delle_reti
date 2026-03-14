@@ -3,7 +3,7 @@
 > **Tipo**: 🔬 Laboratorio guidato  
 > **Durata stimata**: 3–4 ore  
 > **Punteggio**: 40 punti  
-> **File da consegnare**: `es08a_vpn.pkt` + 10 screenshot nella cartella `img/`
+> **File da consegnare**: `es01a_vpn.pkt` + 10 screenshot nella cartella `img/`
 
 ---
 
@@ -11,16 +11,16 @@
 
 | # | Screenshot | Step | Descrizione |
 |---|-----------|------|-------------|
-| 📸1 | `es08a_01_layout.png` | STEP 2 | Topologia PT senza cavi |
-| 📸2 | `es08a_02_cavi.png` | STEP 2 | Topologia PT con tutti i cavi |
-| 📸3 | `es08a_03_ping_base.png` | STEP 3 | Ping Milano→Roma PRIMA della VPN |
-| 📸4 | `es08a_04_simulation.png` | STEP 4 | Simulation Mode — traffico in chiaro |
-| 📸5 | `es08a_05_isakmp.png` | STEP 5 | Configurazione ISAKMP Phase 1 su Router-Milano |
-| 📸6 | `es08a_06_ipsec.png` | STEP 6 | Configurazione IPsec Phase 2 e crypto map |
-| 📸7 | `es08a_07_tunnel_up.png` | STEP 7 | Output `show crypto isakmp sa` con tunnel UP |
-| 📸8 | `es08a_08_ipsec_sa.png` | STEP 8 | Output `show crypto ipsec sa` con contatori |
-| 📸9 | `es08a_09_simulation_vpn.png` | STEP 8 | Simulation Mode — traffico cifrato con VPN |
-| 📸10 | `es08a_10_salvataggio.png` | STEP 9 | Salvataggio file `.pkt` |
+| 📸1 | `es01a_01_layout.png` | STEP 2 | Topologia PT senza cavi |
+| 📸2 | `es01a_02_cavi.png` | STEP 2 | Topologia PT con tutti i cavi |
+| 📸3 | `es01a_03_ping_base.png` | STEP 3 | Ping Milano→Roma PRIMA della VPN |
+| 📸4 | `es01a_04_simulation.png` | STEP 4 | Simulation Mode — traffico in chiaro |
+| 📸5 | `es01a_05_isakmp.png` | STEP 5 | Configurazione ISAKMP Phase 1 su Router-Milano |
+| 📸6 | `es01a_06_ipsec.png` | STEP 6 | Configurazione IPsec Phase 2 e crypto map |
+| 📸7 | `es01a_07_tunnel_up.png` | STEP 7 | Output `show crypto isakmp sa` con tunnel UP |
+| 📸8 | `es01a_08_ipsec_sa.png` | STEP 8 | Output `show crypto ipsec sa` con contatori |
+| 📸9 | `es01a_09_simulation_vpn.png` | STEP 8 | Simulation Mode — traffico cifrato con VPN |
+| 📸10 | `es01a_10_salvataggio.png` | STEP 9 | Salvataggio file `.pkt` |
 
 ---
 
@@ -30,8 +30,8 @@ L'azienda **TechItalia S.r.l.** ha la sede centrale a **Milano** e una filiale a
 Le due sedi devono comunicare in modo sicuro attraverso Internet per condividere file,
 accedere ai server aziendali e gestire applicazioni gestionali.
 
-Senza VPN, tutto il traffico tra Milano e Roma passerebbe attraverso l'ISP in chiaro —
-chiunque con uno sniffer potrebbe leggere email, documenti e credenziali.
+Senza VPN, tutto il traffico tra Milano e Roma passerebbe attraverso l'ISP —
+chiunque con uno sniffer potrebbe leggere il traffico in chiaro, inclusi email, documenti e credenziali.
 
 La soluzione: configurare una **VPN IPsec Site-to-Site** tra i due router perimetrali,
 in modo che tutto il traffico tra le LAN venga automaticamente cifrato prima di uscire
@@ -169,10 +169,15 @@ Router-Milano(config-if)# no shutdown
 ! ── Route statica verso rete Roma (via ISP) ─────────────────────────────────
 Router-Milano(config)# ip route 192.168.2.0 255.255.255.0 203.0.113.1
 ! Significato: "Per raggiungere 192.168.2.0/24, manda i pacchetti a 203.0.113.1 (ISP)"
+! ── nel caso di collegamento con ISP reale, questa sarebbe la default route 
+! verso Internet ─────────────────────────────────────────────────────────────
+! Router-Milano(config)# ip route 0.0.0.0 255.255.255.0 203.0.113.1
+! Significato: "Per raggiungere qualsiasi rete non conosciuta, manda i 
+!pacchetti a 203.0.113.1 (ISP)" ──────────────────────────────────────────────
 
 ! ── Salvataggio configurazione ───────────────────────────────────────────────
 Router-Milano(config)# end
-Router-Milano# write memory
+Router-Milano# copy running-config startup-config
 ```
 
 ### Router-ISP — configurazione completa
@@ -299,23 +304,23 @@ La **Phase 1** crea un canale sicuro tra i due router per negoziare i parametri 
 Router-Milano# configure terminal
 
 ! ── ISAKMP Policy: parametri per negoziare il tunnel sicuro (Phase 1) ────────
+!   AES = Advanced Encryption Standard, algoritmo simmetrico sicuro e veloce
+!   SHA = Secure Hash Algorithm, garantisce l'integrità dei messaggi
+!   pre-share = si usa una "parola chiave" segreta condivisa (PSK)
+!   DH Group 2 = Diffie-Hellman 1024-bit, per generare chiavi senza trasmetterle
+!   86400 sec = 24 ore, dopo le quali la SA Phase 1 viene rinnovata
 Router-Milano(config)# crypto isakmp policy 10
 Router-Milano(config-isakmp)# encryption aes
-!   AES = Advanced Encryption Standard, algoritmo simmetrico sicuro e veloce
 Router-Milano(config-isakmp)# hash sha
-!   SHA = Secure Hash Algorithm, garantisce l'integrità dei messaggi
 Router-Milano(config-isakmp)# authentication pre-share
-!   pre-share = si usa una "parola chiave" segreta condivisa (PSK)
 Router-Milano(config-isakmp)# group 2
-!   DH Group 2 = Diffie-Hellman 1024-bit, per generare chiavi senza trasmetterle
 Router-Milano(config-isakmp)# lifetime 86400
-!   86400 sec = 24 ore, dopo le quali la SA Phase 1 viene rinnovata
 Router-Milano(config-isakmp)# exit
 
 ! ── Chiave pre-condivisa (PSK): DEVE essere identica su entrambi i router ────
-Router-Milano(config)# crypto isakmp key VPN_KEY_SECRET address 203.0.113.6
 !   VPN_KEY_SECRET = la password segreta condivisa tra i due router
 !   203.0.113.6   = indirizzo IP del peer (Router-Roma, interfaccia WAN)
+    Router-Milano(config)# crypto isakmp key VPN_KEY_SECRET address 203.0.113.6
 ```
 
 ### Router-Roma — ISAKMP Phase 1 (speculare)
@@ -333,8 +338,8 @@ Router-Roma(config-isakmp)# lifetime 86400
 Router-Roma(config-isakmp)# exit
 
 ! ── PSK: stessa password, ma con l'IP del PEER = Router-Milano ───────────────
-Router-Roma(config)# crypto isakmp key VPN_KEY_SECRET address 203.0.113.2
 !   203.0.113.2 = indirizzo IP del peer (Router-Milano, interfaccia WAN)
+Router-Roma(config)# crypto isakmp key VPN_KEY_SECRET address 203.0.113.2
 ```
 
 > ⚠️ **ATTENZIONE**: La chiave PSK (`VPN_KEY_SECRET`) deve essere **esattamente identica**
@@ -359,43 +364,45 @@ La **Phase 2** configura come cifrare il traffico dati reale tra le due LAN.
 ### Router-Milano — IPsec Phase 2 completa
 
 ```
+! ── Configurazione IPsec Phase 2 su Router-Milano ─────────────────────────────
 Router-Milano# configure terminal
 
 ! ── Transform-Set: come cifrare i dati del tunnel ───────────────────────────
-Router-Milano(config)# crypto ipsec transform-set VPN-TRANSFORM esp-aes esp-sha-hmac
 !   VPN-TRANSFORM = nome del transform-set (a scelta)
 !   esp-aes       = usa ESP con cifratura AES per la riservatezza dei dati
 !   esp-sha-hmac  = usa SHA per l'autenticazione/integrità dei dati
+Router-Milano(config)# crypto ipsec transform-set VPN-TRANSFORM esp-aes esp-sha-hmac
 
 ! ── ACL: definisce il traffico da cifrare (traffico "interessante") ───────────
-Router-Milano(config)# ip access-list extended VPN-TRAFFIC
-Router-Milano(config-ext-nacl)# permit ip 192.168.1.0 0.0.0.255 192.168.2.0 0.0.0.255
 !   Cifra TUTTO il traffico dalla LAN Milano (192.168.1.0/24) verso LAN Roma (192.168.2.0/24)
 !   Nota: si usa la wildcard mask (inverso della subnet mask)
+Router-Milano(config)# ip access-list extended VPN-TRAFFIC
+Router-Milano(config-ext-nacl)# permit ip 192.168.1.0 0.0.0.255 192.168.2.0 0.0.0.255
 Router-Milano(config-ext-nacl)# exit
 
 ! ── Crypto Map: collega tutto insieme ────────────────────────────────────────
-Router-Milano(config)# crypto map VPN-MAP 10 ipsec-isakmp
 !   VPN-MAP = nome della crypto map
 !   10      = numero sequenza entry
 !   ipsec-isakmp = usa IKE per negoziare automaticamente le SA
-Router-Milano(config-crypto-map)# set peer 203.0.113.6
 !   Indirizzo IP del router remoto (Router-Roma)
-Router-Milano(config-crypto-map)# set transform-set VPN-TRANSFORM
 !   Usa il transform-set definito sopra
-Router-Milano(config-crypto-map)# match address VPN-TRAFFIC
 !   Applica la crypto map solo al traffico definito nell'ACL VPN-TRAFFIC
+Router-Milano(config)# crypto map VPN-MAP 10 ipsec-isakmp
+Router-Milano(config-crypto-map)# set peer 203.0.113.6
+Router-Milano(config-crypto-map)# set transform-set VPN-TRANSFORM
+Router-Milano(config-crypto-map)# match address VPN-TRAFFIC
 Router-Milano(config-crypto-map)# exit
 
 ! ── Applica la Crypto Map all'interfaccia WAN ────────────────────────────────
-Router-Milano(config)# interface GigabitEthernet0/1
-Router-Milano(config-if)# crypto map VPN-MAP
 !   La crypto map si applica sull'interfaccia che "guarda" verso Internet
 !   Da questo momento, tutto il traffico in uscita/entrata viene analizzato
+Router-Milano(config)# interface GigabitEthernet0/1
+Router-Milano(config-if)# crypto map VPN-MAP
 Router-Milano(config-if)# exit
 
+! ── Salvataggio configurazione ───────────────────────────────────────────────
 Router-Milano(config)# end
-Router-Milano# write memory
+Router-Milano# copy running-config startup-config
 ```
 
 ### Router-Roma — IPsec Phase 2 completa (speculare)
@@ -407,16 +414,16 @@ Router-Roma# configure terminal
 Router-Roma(config)# crypto ipsec transform-set VPN-TRANSFORM esp-aes esp-sha-hmac
 
 ! ── ACL: traffico da Roma verso Milano (SPECULARE rispetto a Milano!) ─────────
-Router-Roma(config)# ip access-list extended VPN-TRAFFIC
-Router-Roma(config-ext-nacl)# permit ip 192.168.2.0 0.0.0.255 192.168.1.0 0.0.0.255
 !   NOTA CRITICA: sorgente e destinazione sono INVERTITE rispetto a Router-Milano
 !   Su Router-Roma: sorgente = LAN Roma, destinazione = LAN Milano
+Router-Roma(config)# ip access-list extended VPN-TRAFFIC
+Router-Roma(config-ext-nacl)# permit ip 192.168.2.0 0.0.0.255 192.168.1.0 0.0.0.255
 Router-Roma(config-ext-nacl)# exit
 
 ! ── Crypto Map: speculare con IP peer invertito ───────────────────────────────
+!   IP peer = Router-Milano (203.0.113.2)
 Router-Roma(config)# crypto map VPN-MAP 10 ipsec-isakmp
 Router-Roma(config-crypto-map)# set peer 203.0.113.2
-!   IP peer = Router-Milano (203.0.113.2)
 Router-Roma(config-crypto-map)# set transform-set VPN-TRANSFORM
 Router-Roma(config-crypto-map)# match address VPN-TRAFFIC
 Router-Roma(config-crypto-map)# exit
@@ -426,8 +433,9 @@ Router-Roma(config)# interface GigabitEthernet0/1
 Router-Roma(config-if)# crypto map VPN-MAP
 Router-Roma(config-if)# exit
 
+! ── Salvataggio configurazione ───────────────────────────────────────────────
 Router-Roma(config)# end
-Router-Roma# write memory
+Router-Roma# copy running-config startup-config
 ```
 
 > 📸 **Screenshot 6** — Configurazione IPsec Phase 2 e crypto map su entrambi i router
@@ -484,6 +492,24 @@ Su Router-Milano:
 ```
 Router-Milano# show crypto ipsec sa
 ```
+
+Output atteso con tunnel attivo:
+
+```
+interface: GigabitEthernet0/1
+    Crypto map tag: VPN-MAP, local addr 203.0.113.2
+
+   protected vrf: (none)
+   local  ident (addr/mask/prot/port): (192.168.1.0/255.255.255.0/0/0)
+   remote ident (addr/mask/prot/port): (192.168.2.0/255.255.255.0/0/0)
+   current_peer 203.0.113.6 port 500
+
+    #pkts encaps: 25, #pkts encrypt: 25, #pkts digest: 25
+    #pkts decaps: 25, #pkts decrypt: 25, #pkts verify: 25
+    #send errors 0, #recv errors 0
+```
+
+Cerca i contatori `#pkts encaps` e `#pkts decaps` — devono essere > 0 dopo i ping.
 
 Cerca i contatori `#pkts encaps` e `#pkts decaps` — devono essere > 0 dopo i ping.
 

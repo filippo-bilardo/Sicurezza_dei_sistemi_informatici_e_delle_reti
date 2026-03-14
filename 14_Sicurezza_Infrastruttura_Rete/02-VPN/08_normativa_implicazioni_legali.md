@@ -1,7 +1,7 @@
-# Capitolo 49.8 - Normativa e Implicazioni Legali delle VPN
+# Capitolo 08 - Normativa e Implicazioni Legali delle VPN
 
 > **PARTE 14 - SICUREZZA DELL'INFRASTRUTTURA DI RETE**  
-> **Capitolo 49 — VPN e Accesso Remoto Sicuro**
+> **Capitolo 08 — VPN e Accesso Remoto Sicuro**
 
 ---
 
@@ -271,5 +271,5 @@ Se si usa un provider VPN esterno (es. per i dipendenti):
 
 ---
 
-**Sezione Precedente**: [49.7 - VPN Kill Switch e DNS Leak](./49_7_vpn_kill_switch_e_dns_leak.md)  
-**Prossima Sezione**: [49.9 - Modelli di Accesso Remoto Sicuro](./49_9_modelli_accesso_remoto_sicuro.md)
+**Sezione Precedente**: [07 - VPN Kill Switch e DNS Leak](./07_vpn_kill_switch_e_dns_leak.md)  
+**Prossima Sezione**: [09 - Modelli di Accesso Remoto Sicuro](./09_modelli_accesso_remoto_sicuro.md)

@@ -1,7 +1,7 @@
-# Capitolo 49.1 - OpenVPN
+# Capitolo 04 - OpenVPN
 
 > **PARTE 14 - SICUREZZA DELL'INFRASTRUTTURA DI RETE**  
-> **Capitolo 49 — VPN e Accesso Remoto Sicuro**
+> **Capitolo 04 — VPN e Accesso Remoto Sicuro**
 
 ---
 
@@ -412,5 +412,5 @@ openvpn --config client.ovpn --verb 6
 
 ---
 
-**Sezione Precedente**: [48.5 - RPZ (Response Policy Zones)](#)  
-**Prossima Sezione**: [49.2 - WireGuard](./49_2_wireguard.md)
+**Sezione Precedente**: [03 - IPsec VPN](./03_ipsec_vpn.md)  
+**Prossima Sezione**: [05 - WireGuard](./05_wireguard.md)

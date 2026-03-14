@@ -1,7 +1,7 @@
-# Capitolo 49.2 - SSL VPN
+# Capitolo 02 - SSL VPN
 
 > **PARTE 14 - SICUREZZA DELL'INFRASTRUTTURA DI RETE**  
-> **Capitolo 49 — VPN e Accesso Remoto Sicuro**
+> **Capitolo 02 — VPN e Accesso Remoto Sicuro**
 
 ---
 
@@ -469,5 +469,5 @@ if __name__ == "__main__":
 
 ---
 
-**Sezione Precedente**: [49.1 - Le VPN](./49_1_le_vpn.md)  
-**Prossima Sezione**: [49.3 - IPsec VPN](./49_3_openvpn.md)
+**Sezione Precedente**: [01 - Le VPN](./01_le_vpn.md)  
+**Prossima Sezione**: [03 - IPsec VPN](./03_ipsec_vpn.md)

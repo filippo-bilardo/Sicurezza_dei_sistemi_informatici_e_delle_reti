@@ -1,7 +1,7 @@
-# Capitolo 49.9 - Modelli di Accesso Remoto Sicuro
+# Capitolo 09 - Modelli di Accesso Remoto Sicuro
 
 > **PARTE 14 - SICUREZZA DELL'INFRASTRUTTURA DI RETE**  
-> **Capitolo 49 — VPN e Accesso Remoto Sicuro**
+> **Capitolo 09 — VPN e Accesso Remoto Sicuro**
 
 ---
 
@@ -384,5 +384,5 @@ Continuità:
 
 ---
 
-**Sezione Precedente**: [49.8 - Normativa e Implicazioni Legali](./49_8_normativa_implicazioni_legali.md)  
-**Prossima Sezione**: [50.1 - VLAN e 802.1Q](#)
+**Sezione Precedente**: [08 - Normativa e Implicazioni Legali](./08_normativa_implicazioni_legali.md)  
+**Indice**: [Indice](../README.md)

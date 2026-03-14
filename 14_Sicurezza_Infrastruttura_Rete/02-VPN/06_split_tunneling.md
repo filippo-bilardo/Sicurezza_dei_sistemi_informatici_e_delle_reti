@@ -1,7 +1,7 @@
-# Capitolo 49.4 - Split Tunneling
+# Capitolo 06 - Split Tunneling
 
 > **PARTE 14 - SICUREZZA DELL'INFRASTRUTTURA DI RETE**  
-> **Capitolo 49 — VPN e Accesso Remoto Sicuro**
+> **Capitolo 06 — VPN e Accesso Remoto Sicuro**
 
 ---
 
@@ -381,5 +381,5 @@ if __name__ == "__main__":
 
 ---
 
-**Sezione Precedente**: [49.3 - SSL VPN vs IPsec VPN](./49_3_ssl_vpn_vs_ipsec_vpn.md)  
-**Prossima Sezione**: [49.5 - VPN Kill Switch e DNS Leak](./49_5_vpn_kill_switch_e_dns_leak.md)
+**Sezione Precedente**: [05 - WireGuard](./05_wireguard.md)  
+**Prossima Sezione**: [07 - VPN Kill Switch e DNS Leak](./07_vpn_kill_switch_e_dns_leak.md)

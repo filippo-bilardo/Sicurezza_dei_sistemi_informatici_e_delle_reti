@@ -1,7 +1,7 @@
-# Capitolo 49.1 - Le VPN
+# 02 - Le VPN
 
 > **PARTE 14 - SICUREZZA DELL'INFRASTRUTTURA DI RETE**  
-> **Capitolo 49 — VPN e Accesso Remoto Sicuro**
+> **Capitolo 02 — VPN e Accesso Remoto Sicuro**
 
 ---
 
@@ -344,5 +344,5 @@ Un'infrastruttura VPN sicura richiede una PKI (Public Key Infrastructure) per:
 
 ---
 
-**Sezione Precedente**: [48.5 - RPZ (Response Policy Zones)](#)  
-**Prossima Sezione**: [49.2 - SSL VPN](./49_2_ssl_vpn.md)
+**Indice**: [Indice](../README.md) 
+**Prossima Sezione**: [SSL VPN](./02_ssl_vpn.md)

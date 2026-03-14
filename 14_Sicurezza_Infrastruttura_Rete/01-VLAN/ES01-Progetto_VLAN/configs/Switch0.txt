@@ -1,0 +1,69 @@
+! Configurazione Switch0
+! VLAN2 - Access Switch (lato sinistro)
+! Dispositivi: PC0 (VLAN10), PC1 (VLAN20)
+
+enable
+configure terminal
+hostname Switch0
+
+! ============================================
+! Creazione VLAN
+! ============================================
+vlan 10
+ name VLAN10_subnet1
+exit
+
+vlan 20
+ name VLAN20_subnet2
+exit
+
+! ============================================
+! Configurazione Porta TRUNK verso Router0
+! GigabitEthernet0/1 → Router0 Gi0/0
+! Trasporta VLAN 10 e 20 con tag 802.1Q
+! ============================================
+interface GigabitEthernet0/1
+ switchport mode trunk
+ switchport trunk allowed vlan 10,20
+ description Trunk to Router0
+ no shutdown
+exit
+
+! ============================================
+! Configurazione Porta ACCESS per PC0 (VLAN10)
+! FastEthernet0/1 → PC0
+! ============================================
+interface FastEthernet0/1
+ switchport mode access
+ switchport access vlan 10
+ description PC0 - VLAN10 - 192.168.10.10
+ spanning-tree portfast
+ no shutdown
+exit
+
+! ============================================
+! Configurazione Porta ACCESS per PC1 (VLAN20)
+! FastEthernet0/2 → PC1
+! ============================================
+interface FastEthernet0/2
+ switchport mode access
+ switchport access vlan 20
+ description PC1 - VLAN20 - 192.168.10.42
+ spanning-tree portfast
+ no shutdown
+exit
+
+end
+
+! ============================================
+! Salvataggio configurazione
+! ============================================
+write memory
+
+! ============================================
+! Comandi di verifica
+! ============================================
+! show vlan brief
+! show interfaces trunk
+! show running-config
+! show interfaces status

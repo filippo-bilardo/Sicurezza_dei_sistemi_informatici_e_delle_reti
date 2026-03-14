@@ -1,8 +1,7 @@
-# ES08 — Ipsec VPN: Configurazione di Tunnel VPN con Router Cisco
+# Ipsec VPN: Configurazione di Tunnel VPN con Router Cisco
 
 > **Materia**: Sistemi e Reti — Classe 5ª  
 > **Argomento**: Virtual Private Network (VPN) con router Cisco 2901 in Cisco Packet Tracer  
-> **Prerequisiti**: ES05 (Routing Statico), ES06 (ACL), ES07 (NAT) — o equivalenti  
 > **Durata stimata**: 3–4 ore (esercizio A), 4–6 ore (esercizio B)
 
 ---

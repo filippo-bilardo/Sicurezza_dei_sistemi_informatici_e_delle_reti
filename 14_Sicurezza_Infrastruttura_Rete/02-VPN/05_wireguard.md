@@ -1,7 +1,7 @@
-# Capitolo 49.2 - WireGuard
+# Capitolo 05 - WireGuard
 
 > **PARTE 14 - SICUREZZA DELL'INFRASTRUTTURA DI RETE**  
-> **Capitolo 49 — VPN e Accesso Remoto Sicuro**
+> **Capitolo 05 — VPN e Accesso Remoto Sicuro**
 
 ---
 
@@ -398,5 +398,5 @@ sudo wg set wg0 peer <PUBLIC_KEY> persistent-keepalive 0
 
 ---
 
-**Sezione Precedente**: [49.1 - OpenVPN](./49_1_openvpn.md)  
-**Prossima Sezione**: [49.3 - SSL VPN vs IPsec VPN](./49_3_ssl_vpn_vs_ipsec_vpn.md)
+**Sezione Precedente**: [04 - OpenVPN](./04_openvpn.md)  
+**Prossima Sezione**: [06 - SSL VPN vs IPsec VPN](./06_split_tunneling.md)

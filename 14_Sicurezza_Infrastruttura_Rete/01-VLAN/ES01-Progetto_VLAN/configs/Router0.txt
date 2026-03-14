@@ -1,0 +1,69 @@
+! Configurazione Router0
+! VLAN2 - Inter-VLAN Routing
+! Subnet: 192.168.10.0/24 suddivisa in 5 sottoreti /27
+
+enable
+configure terminal
+hostname Router0
+
+! ============================================
+! Interfaccia Seriale verso Router1 (subnet5)
+! Backbone: 192.168.10.128/27
+! ============================================
+interface Serial0/0/0
+ ip address 192.168.10.129 255.255.255.224
+ clock rate 64000
+ description Backbone to Router1
+ no shutdown
+exit
+
+! ============================================
+! Subinterface VLAN 10 (subnet1)
+! Rete: 192.168.10.0/27
+! Gateway per PC0
+! ============================================
+interface GigabitEthernet0/0.10
+ encapsulation dot1Q 10
+ ip address 192.168.10.1 255.255.255.224
+ description Gateway VLAN10 - subnet1 (PC0)
+exit
+
+! ============================================
+! Subinterface VLAN 20 (subnet2)
+! Rete: 192.168.10.32/27
+! Gateway per PC1
+! ============================================
+interface GigabitEthernet0/0.20
+ encapsulation dot1Q 20
+ ip address 192.168.10.33 255.255.255.224
+ description Gateway VLAN20 - subnet2 (PC1)
+exit
+
+! ============================================
+! Attivazione interfaccia fisica
+! ============================================
+interface GigabitEthernet0/0
+ no shutdown
+exit
+
+! ============================================
+! Routing Statico
+! Route verso subnet3 (VLAN10) e subnet4 (VLAN20) via Router1
+! ============================================
+ip route 192.168.10.64 255.255.255.224 192.168.10.130
+ip route 192.168.10.96 255.255.255.224 192.168.10.130
+
+end
+
+! ============================================
+! Salvataggio configurazione
+! ============================================
+write memory
+
+! ============================================
+! Comandi di verifica
+! ============================================
+! show ip interface brief
+! show ip route
+! show running-config
+! ping 192.168.10.130 (test connettività Router1)

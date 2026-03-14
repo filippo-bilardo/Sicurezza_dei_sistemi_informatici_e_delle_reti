@@ -1,7 +1,7 @@
-# Capitolo 49.5 - VPN Kill Switch e DNS Leak
+# Capitolo 07 - VPN Kill Switch e DNS Leak
 
 > **PARTE 14 - SICUREZZA DELL'INFRASTRUTTURA DI RETE**  
-> **Capitolo 49 — VPN e Accesso Remoto Sicuro**
+> **Capitolo 07 — VPN e Accesso Remoto Sicuro**
 
 ---
 
@@ -454,5 +454,5 @@ echo "  - https://ipleak.net"
 
 ---
 
-**Sezione Precedente**: [49.4 - Split Tunneling](./49_4_split_tunneling.md)  
-**Prossima Sezione**: [49.6 - Zero Trust Network Access (ZTNA)](./49_6_zero_trust_network_access.md)
+**Sezione Precedente**: [06 - Split Tunneling](./06_split_tunneling.md)  
+**Prossima Sezione**: [08 - Zero Trust Network Access (ZTNA)](./08_normativa_implicazioni_legali.md)
