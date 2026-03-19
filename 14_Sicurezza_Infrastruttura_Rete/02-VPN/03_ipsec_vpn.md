@@ -7,7 +7,7 @@
 
 ## Introduzione
 
-**IPsec (Internet Protocol Security)** è un framework di protocolli standardizzato dall'IETF che fornisce sicurezza a livello rete (Layer 3). A differenza delle SSL VPN che operano a livello applicativo, IPsec protegge direttamente i pacchetti IP, rendendolo trasparente alle applicazioni e particolarmente adatto a connessioni site-to-site permanenti ad alte prestazioni.
+**IPsec (Internet Protocol Security)** è un framework di protocolli standardizzato dall'IETF che fornisce sicurezza a livello rete (Layer 3). A differenza delle SSL VPN e di OpenVPN che operano a livello applicativo, IPsec protegge direttamente i pacchetti IP, rendendolo trasparente alle applicazioni e particolarmente adatto a connessioni site-to-site permanenti ad alte prestazioni.
 
 ### Obiettivi di Apprendimento
 - Comprendere l'architettura IPsec e i suoi componenti (AH, ESP, IKE)

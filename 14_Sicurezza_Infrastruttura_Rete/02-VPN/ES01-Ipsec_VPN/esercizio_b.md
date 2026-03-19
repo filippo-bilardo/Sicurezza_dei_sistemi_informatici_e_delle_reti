@@ -1,9 +1,9 @@
-# ES08-B — Progetto autonomo: VPN Hub-and-Spoke per MultiSede S.p.A.
+# ES01b — Progetto autonomo: VPN Hub-and-Spoke per MultiSede S.p.A.
 
 > **Tipo**: 🏗️ Progetto autonomo  
 > **Durata stimata**: 2–3 ore  
 > **Punteggio**: 50 punti base + 20 punti bonus  
-> **File da consegnare**: `es08b_multisede.pkt` + relazione tecnica (schema topologia, tabelle, test)
+> **File da consegnare**: `es01b_multisede.pkt` + relazione tecnica (schema topologia, tabelle, test)
 
 ---
 

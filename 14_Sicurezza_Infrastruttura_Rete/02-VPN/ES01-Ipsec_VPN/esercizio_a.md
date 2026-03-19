@@ -1,4 +1,4 @@
-# ES08-A — Laboratorio guidato: Configurazione VPN IPsec Site-to-Site in Cisco Packet Tracer
+# ES01a — Laboratorio guidato: Configurazione VPN IPsec Site-to-Site in Cisco Packet Tracer
 
 > **Tipo**: 🔬 Laboratorio guidato  
 > **Durata stimata**: 3–4 ore  

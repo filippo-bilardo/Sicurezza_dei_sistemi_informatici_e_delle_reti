@@ -1,4 +1,4 @@
-# ES08-C — Domande di teoria: VPN e sicurezza delle comunicazioni
+# ES01c — Domande di teoria: VPN e sicurezza delle comunicazioni
 
 > **Tipo**: 📖 Teoria  
 > **Punteggio totale**: 70 punti  
