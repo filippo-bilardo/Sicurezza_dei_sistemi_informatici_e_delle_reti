@@ -1,0 +1,83 @@
+version: '3.8'
+
+services:
+  # Nginx Proxy Manager
+  nginx-proxy-manager:
+    image: 'jc21/nginx-proxy-manager:latest'
+    container_name: nginx-proxy-manager
+    restart: unless-stopped
+    ports:
+      # HTTP - Public Port
+      - '80:80'
+      # HTTPS - Public Port  
+      - '443:443'
+      # Admin Web Interface
+      - '81:81'
+    
+    environment:
+      # Database: usa SQLite interno (semplice per lab)
+      DB_SQLITE_FILE: "/data/database.sqlite"
+      
+      # Timezone Italia
+      TZ: "Europe/Rome"
+      
+      # Opzionale: disabilita IPv6 se problemi
+      # DISABLE_IPV6: 'true'
+    
+    volumes:
+      # Volume dati persistenti
+      # Contiene: database, configurazioni Nginx, certificati SSL
+      - ./data/nginx:/data
+      
+      # Volume certificati Let's Encrypt
+      - ./data/letsencrypt:/etc/letsencrypt
+      
+      # Volume log (accessibile dall'host per analisi)
+      - ./data/logs:/data/logs
+    
+    networks:
+      - proxy-network
+    
+    # Health check per monitoraggio
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:81"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # MySQL/MariaDB (opzionale, per production)
+  # Decommentare se serve database esterno invece di SQLite
+  # db:
+  #   image: mariadb:10.11
+  #   container_name: npm-db
+  #   restart: unless-stopped
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+  #     MYSQL_DATABASE: npm
+  #     MYSQL_USER: npm
+  #     MYSQL_PASSWORD: ${DB_PASSWORD}
+  #   volumes:
+  #     - ./data/mysql:/var/lib/mysql
+  #   networks:
+  #     - proxy-network
+  #   healthcheck:
+  #     test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3
+
+networks:
+  proxy-network:
+    driver: bridge
+    ipam:
+      config:
+        # Subnet dedicata per proxy e backend
+        - subnet: 172.30.0.0/24
+          gateway: 172.30.0.1
+
+# Per aggiungere volumi nominali Docker (opzionale)
+# volumes:
+#   npm-data:
+#   npm-ssl:
+#   npm-logs:

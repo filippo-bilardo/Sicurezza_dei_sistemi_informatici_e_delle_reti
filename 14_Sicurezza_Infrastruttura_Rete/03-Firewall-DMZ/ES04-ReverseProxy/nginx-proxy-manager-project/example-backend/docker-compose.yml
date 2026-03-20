@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  # Backend App 1 - Nginx Static
+  app1:
+    image: nginx:alpine
+    container_name: backend-app1
+    restart: unless-stopped
+    ports:
+      - "8081:80"
+    volumes:
+      - ./app1-html:/usr/share/nginx/html:ro
+    networks:
+      nginx-proxy-manager_proxy-network:
+        ipv4_address: 172.30.0.11
+
+  # Backend App 2 - Apache Static
+  app2:
+    image: httpd:alpine
+    container_name: backend-app2
+    restart: unless-stopped
+    ports:
+      - "8082:80"
+    volumes:
+      - ./app2-html:/usr/local/apache2/htdocs/:ro
+    networks:
+      nginx-proxy-manager_proxy-network:
+        ipv4_address: 172.30.0.12
+
+  # Backend App 3 - Node.js Simple
+  app3:
+    image: node:18-alpine
+    container_name: backend-app3
+    restart: unless-stopped
+    working_dir: /app
+    command: node server.js
+    ports:
+      - "8083:3000"
+    volumes:
+      - ./app3-node:/app:ro
+    networks:
+      nginx-proxy-manager_proxy-network:
+        ipv4_address: 172.30.0.13
+
+networks:
+  nginx-proxy-manager_proxy-network:
+    external: true

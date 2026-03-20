@@ -1,0 +1,32 @@
+# Nginx Proxy Manager - Git Ignore
+
+# Directory dati (contiene database, certificati, log)
+data/
+
+# File ambiente con credenziali
+.env
+
+# Backup locali
+npm-backup-*.tar.gz
+*.backup
+data.old.*
+data.reset-backup.*
+
+# Log Docker
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Temporary files
+tmp/
+temp/
