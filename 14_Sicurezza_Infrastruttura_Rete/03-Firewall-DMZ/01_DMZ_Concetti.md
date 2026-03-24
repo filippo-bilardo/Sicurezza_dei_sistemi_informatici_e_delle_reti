@@ -153,35 +153,35 @@ La **defense in depth** (difesa in profondità) è una strategia di sicurezza mi
 ```
     INTERNET
        │
-  ┌────▼─────┐
-  │ Firewall │  ← Strato 1: filtraggio pacchetti
-  │ Perimetrale│
-  └────┬─────┘
+  ┌────▼──────┐
+  │ Firewall  │  ← Strato 1: filtraggio pacchetti
+  │Perimetrale│
+  └────┬──────┘
        │
-  ┌────▼─────┐
-  │   IDS/   │  ← Strato 2: rilevamento intrusioni
-  │   IPS    │
-  └────┬─────┘
+  ┌────▼──────┐
+  │   IDS/    │  ← Strato 2: rilevamento intrusioni
+  │   IPS     │
+  └────┬──────┘
        │
-  ┌────▼─────┐
-  │   DMZ    │  ← Strato 3: zona isolata per server pubblici
-  │          │
-  └────┬─────┘
+  ┌────▼──────┐
+  │   DMZ     │  ← Strato 3: zona isolata per server pubblici
+  │           │
+  └────┬──────┘
        │
-  ┌────▼─────┐
-  │ Firewall │  ← Strato 4: secondo firewall (doppia DMZ)
-  │ Interno  │
-  └────┬─────┘
+  ┌────▼──────┐
+  │ Firewall  │  ← Strato 4: secondo firewall (doppia DMZ)
+  │ Interno   │
+  └────┬──────┘
        │
-  ┌────▼─────┐
-  │   LAN    │  ← Strato 5: segmentazione interna
-  │ Interna  │    (VLAN per HR, IT, Direzione...)
-  └────┬─────┘
+  ┌────▼──────┐
+  │   LAN     │  ← Strato 5: segmentazione interna
+  │ Interna   │    (VLAN per HR, IT, Direzione...)
+  └────┬──────┘
        │
-  ┌────▼─────┐
-  │  Endpoint│  ← Strato 6: antivirus, EDR, patch management
-  │ Security │
-  └──────────┘
+  ┌────▼──────┐
+  │  Endpoint │  ← Strato 6: antivirus, EDR, patch management
+  │ Security  │
+  └───────────┘
 ```
 
 **La DMZ è uno strato**: non è la soluzione completa, ma fa parte di una strategia più ampia. Un'azienda che ha solo la DMZ ma non ha IDS, segmentazione interna, endpoint protection, ecc. ha ancora numerose vulnerabilità.

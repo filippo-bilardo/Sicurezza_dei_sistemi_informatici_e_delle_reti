@@ -75,4 +75,4 @@ Failover automatico se server cade.
 
 ---
 
-**Prossima Sezione**: [02 - Nginx Installazione](./02_Nginx_Installazione.md)
+**Prossima Sezione**: [02 - Nginx Installazione](./d02_Nginx_Installazione.md)

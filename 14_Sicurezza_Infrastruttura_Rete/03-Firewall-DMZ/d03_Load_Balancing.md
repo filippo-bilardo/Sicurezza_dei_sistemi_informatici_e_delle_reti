@@ -142,4 +142,4 @@ upstream backend {
 
 ---
 
-**Prossima Sezione**: [04 - SSL Termination](./04_SSL_Termination.md)
+**Prossima Sezione**: [04 - Nginx Proxy Manager](d04_Nginx_Proxy_Manager.md)
