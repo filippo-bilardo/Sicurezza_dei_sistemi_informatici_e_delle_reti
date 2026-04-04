@@ -237,6 +237,7 @@ Con VPN (es. IPsec in tunnel mode):
 
 ---
 
+
 ## Tipologie di VPN
 
 ### 1. Remote Access VPN (Road Warrior)
@@ -245,8 +246,8 @@ Permette a singoli utenti (dipendenti remoti, telelavoratori) di connettersi all
 
 ```
 [Laptop dipendente] ──── Internet ──── [VPN Gateway Aziendale] ──── [LAN Aziendale]
-    VPN Client                              VPN Server
-    10.8.0.5                                10.8.0.1                  192.168.1.0/24
+   VPN Client                              VPN Server
+   10.8.0.5                                10.8.0.1                  192.168.1.0/24
 ```
 
 **Caratteristiche:**
@@ -274,7 +275,6 @@ Collega permanentemente due o più sedi aziendali, creando una rete unificata.
 
 **Uso tipico:** connessione tra filiali, datacenter, cloud provider.
 
-
 ### 3. Client-to-Site VPN (variante Remote Access)
 
 Simile al Remote Access, ma con architettura più strutturata dove il client avvia sempre la connessione verso un concentratore VPN centrale dedicato.
@@ -299,30 +299,118 @@ Simile al Remote Access, ma con architettura più strutturata dove il client avv
 - Cisco AnyConnect con ASA/ISE backend
 - FortiClient verso Fortinet FortiGate
 
+### 4. Personal VPN (Consumer VPN)
 
-### 4. Cloud VPN
+Servizio VPN commerciale rivolto a utenti finali (non aziendali) per proteggere la privacy su reti pubbliche e aggirare restrizioni geografiche.
+
+```
+[Dispositivo Utente] ──── Internet ──── [VPN Provider Server] ──── [Internet Pubblico]
+   (home/caffè/hotel)                  (NordVPN, ExpressVPN,       (sito destinazione)
+                               ProtonVPN, etc.)
+```
+
+**Caratteristiche:**
+- **Semplice installation**: app consumer pre-configurata (zero-conf)
+- **Uso occasionale**: non always-on, attivazione manuale
+- **Nessuna autenticazione aziendale**: username/email + password, spesso MFA opzionale
+- **IP condivisi tra utenti**: server VPN gestisce pool di IP estremamente grande, molti utenti condividono stessi IP pubblici
+- **Enfasi privacy**: marketing su "nessun logging", "privacy garantita", anonimato
+- **Geolocalizzazione**: utenti scelgono server VPN in Paese specifico per aggirare blocchi geografici o censure
+
+**Protocolli comuni:** OpenVPN, WireGuard, Proprietary protocols (IKEv2-based), SSTP, L2TP/IPsec
+
+**Modello di fiducia:**
+- ⚠️ **Necessità completa di fiducia nel provider**: il provider VPN **vede tutto il traffico in chiaro** prima di cifrarlo. Se provider è malevolo o compromesso, privacy completamente violata
+- ✅ Internet Service Provider (ISP) **non vede il traffico** — solo il tunnel VPN crittografato verso il server VPN
+- ⚠️ Siti web destinazione **vedono l'IP del server VPN**, non l'IP reale dell'utente (potrebbe essere non authevole)
+
+**Quando usare Personal VPN:**
+
+✅ **Appropriato per...**
+- Proteggere privacy su WiFi pubblico (caffè, hotel, aeroporto) da sniffing locale
+- Evitare geoblocking (accedere Netflix di un Paese diverso da dove si è)
+- Aggirare censura Internet (Cina, Iran, Russia)
+- Protezione da ISP che fa logging del browsing
+
+❌ **Non appropriato per...**
+- Sicurezza completa: VPN provider rimane untrusted, potrebbe loggare traffico
+- Anonimato totale: IP VPN rimane tracciabile, provider sa chi sei (account pagato con carta)
+- Accesso a risorse aziendali: usare Remote Access VPN aziendale
+- Bypass ToS di siti: potrebbe violare i terms of service
+
+**Confronto: Personal VPN vs. Tor**
+
+| Aspetto | Personal VPN | Tor |
+|--------|-------------|-----|
+| Provider accessibility | 1 hop | 3+ hop (onion routing) |
+| Speed | Alto | Basso (multi-hop) |
+| Anonimato | Parziale (provider sa chi sei) | Alto (nessuno sa chi sei) |
+| Semplicità | Molto semplice | Complesso (Tor Browser) |
+| Costo | €5-12/mese tipico | Gratuito |
+| Trust model | Provider non-malicious | Rete decentralizzata |
+| Bypassa firewall | Sì (con obfuscation) | Potenzialmente (Tor bridges) |
+
+**Avvertenze di Sicurezza:**
+
+```
+⚠️ MITI sulla Personal VPN:
+
+❌ "Personal VPN mi rende completamente anonimo"
+   → Falso: Provider VPN conosce il tuo account (pagamento)
+     Siti web vedono IP VPN (ovvero il provider), non il tuo, 
+     ma pattern di traffico potrebbe essere correlato all'utente reale
+
+❌ "Personal VPN mi protegge da virus/malware"
+   → Falso: VPN protegge il trasporto, non il dispositivo.
+     Malware sul tuo computer rimane accessibile anche con VPN.
+
+❌ "Posso usare Personal VPN per attività illegale gratuitamente"
+   → Rischioso: Polizia può ordinare al provider VPN il log degli utenti.
+     Se provider ha policy "no-log" credibile, rimane come ultimo rifugio,
+     ma lo stato di "no-log" è spesso non auditato.
+
+✅ USO LEGITTIMO:
+   • Privacy da ISP su rete pubblica (WiFi caffè)
+   • Bypass geoblocco legittimi (accedere servizi da viaggio)
+   • Privacy da tracciamento web (insieme a AdBlock, uBlock)
+```
+
+**Selezione Provider Affidabili (2024):**
+
+| Provider | Giurisdizione | Policy No-Log | Open Source Audit | Prezzo |
+|----------|--------------|---------------|------------------|--------|
+| **Mullvad** | Svezia | Sì | Partial (OpenVPN) | €5/mese |
+| **ProtonVPN** | Svizzera | Sì | Sì (WireGuard) | €5-8/mese |
+| **IVPN** | Gibilterra | Sì | Sì (WireGuard) | €6/mese |
+| **NordVPN** | Panama | Sì (recente audit) | No | €3-5/mese |
+| ❌ **TunnelBear** | Canada | Sì | No | €10/mese |
+| ❌ **ExpressVPN** | Isole Vergini | Questionato | No | €7/mese |
+
+> ⚠️ Diffidare di provider in giurisdizioni Five Eyes (USA, UK, Australia, Canada, Nuova Zelanda) con mandatory data retention laws.
+
+### 5. Cloud VPN
 
 Connette reti on-premise o utenti alle risorse cloud (AWS, Azure, GCP).
 
 ```
 [LAN Aziendale] ──── [VPN Gateway] ════════════ [AWS VPC / Azure VNet]
-                                   ↑
-                           IPsec o WireGuard
+                           ↑
+                     IPsec o WireGuard
 ```
 
-### 5. MPLS VPN (Provider-Managed)
+### 6. MPLS VPN (Provider-Managed)
 
 Soluzione di connettività WAN gestita completamente dall'operatore di telecomunicazione, basata su MPLS (Multi-Protocol Label Switching). A differenza delle VPN tradizionali su Internet pubblica, il traffico **non transita per Internet — rimane confinato dentro la rete privata del provider**.
 
 ```
 [LAN Sede A] ──── [PE Router A] ═════════════════════ [PE Router B] ──── [LAN Sede B]
 192.168.1.0/24      ↓                                      ↓           192.168.2.0/24
-            Rete privata provider
-            (MPLS backbone)
-               ↓
-          Garantie di QoS
-          Isolamento garantito
-          Nessun traffico Internet pubblico
+         Rete privata provider
+         (MPLS backbone)
+            ↓
+        Garantie di QoS
+        Isolamento garantito
+        Nessun traffico Internet pubblico
 ```
 
 **Caratteristiche distintive:**
@@ -374,7 +462,6 @@ Rimane rilevante per:
 - Fornitori di servizi che gestiscono rete MPLS già operativa
 - Paesi con scadente qualità Internet pubblico (richiedono garanzie WAN)
 
----
 
 
 ---
