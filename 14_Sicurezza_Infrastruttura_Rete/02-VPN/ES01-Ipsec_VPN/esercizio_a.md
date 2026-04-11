@@ -2,10 +2,8 @@
 
 > **Tipo**: 🔬 Laboratorio guidato  
 > **Durata stimata**: 3–4 ore  
-> **Punteggio**: 40 punti  
-> **File da consegnare**: `es01a_vpn.pkt` + 10 screenshot nella cartella `img/`
-
----
+> **Punteggio base**: 40 punti (+5 opzionali)  
+> **File da consegnare**: `es01a_vpn.pkt` + 10 screenshot obbligatori (3 bonus opzionali)
 
 ## 📸 Riepilogo Screenshot richiesti
 
@@ -21,6 +19,8 @@
 | 📸8 | `es01a_08_ipsec_sa.png` | STEP 8 | Output `show crypto ipsec sa` con contatori |
 | 📸9 | `es01a_09_simulation_vpn.png` | STEP 8 | Simulation Mode — traffico cifrato con VPN |
 | 📸10 | `es01a_10_salvataggio.png` | STEP 9 | Salvataggio file `.pkt` |
+
+*(📸11-13 sono opzionali per il bonus e sono descritti nello Step 8)*
 
 ---
 
@@ -42,17 +42,17 @@ su Internet e decifrato all'arrivo.
 ## 🗺️ Topologia di rete
 
 ```
-SEDE CENTRALE (Milano)         INTERNET (simulata)          FILIALE (Roma)
-192.168.1.0/24                 203.0.113.0/30               192.168.2.0/24
-                               203.0.113.4/30
+SEDE CENTRALE (Milano)      INTERNET (simulata)          FILIALE (Roma)
+192.168.1.0/24              203.0.113.0/30               192.168.2.0/24
+                            203.0.113.4/30
 
 ┌─────────────────────┐    ┌──────────────────┐    ┌─────────────────────┐
 │   Router-Milano     │    │   Router-ISP     │    │    Router-Roma      │
-│  (Cisco 2901)       │    │ (Cisco 2901)     │    │  (Cisco 2901)       │
+│  (Cisco 1941)       │    │ (Cisco 1941)     │    │  (Cisco 1941)       │
 │                     │    │                  │    │                     │
-│ Gi0/0: 192.168.1.1  │    │ Fa0/0:203.0.113.1│    │ Gi0/0: 192.168.2.1  │
+│ Gi0/0: 192.168.1.1  │    │ Gi0/0:203.0.113.1│    │ Gi0/0: 192.168.2.1  │
 │ Gi0/1: 203.0.113.2  ├────┤                  ├────┤ Gi0/1: 203.0.113.6  │
-└─────────────────────┘    │ Fa0/1:203.0.113.5│    └─────────────────────┘
+└─────────────────────┘    │ Gi0/1:203.0.113.5│    └─────────────────────┘
          │                 └──────────────────┘              │
   ┌──────┴──────┐                                     ┌──────┴──────┐
   │ Switch-Milan│                                     │ Switch-Roma │
@@ -76,8 +76,8 @@ SEDE CENTRALE (Milano)         INTERNET (simulata)          FILIALE (Roma)
 |-------------|-------------|--------------|-------------|---------|-------|
 | Router-Milano | Gi0/0 | 192.168.1.1 | 255.255.255.0 | — | Gateway LAN Milano |
 | Router-Milano | Gi0/1 | 203.0.113.2 | 255.255.255.252 | — | Interfaccia WAN (verso ISP) |
-| Router-ISP | Fa0/0 | 203.0.113.1 | 255.255.255.252 | — | Collegamento verso Milano |
-| Router-ISP | Fa0/1 | 203.0.113.5 | 255.255.255.252 | — | Collegamento verso Roma |
+| Router-ISP | Gi0/0 | 203.0.113.1 | 255.255.255.252 | — | Collegamento verso Milano |
+| Router-ISP | Gi0/1 | 203.0.113.5 | 255.255.255.252 | — | Collegamento verso Roma |
 | Router-Roma | Gi0/0 | 192.168.2.1 | 255.255.255.0 | — | Gateway LAN Roma |
 | Router-Roma | Gi0/1 | 203.0.113.6 | 255.255.255.252 | — | Interfaccia WAN (verso ISP) |
 | Switch-Milano | — | — | — | — | Switch LAN Milano |
@@ -88,6 +88,8 @@ SEDE CENTRALE (Milano)         INTERNET (simulata)          FILIALE (Roma)
 | PC-RO1 | Fa0 | 192.168.2.10 | 255.255.255.0 | 192.168.2.1 | Client filiale Roma |
 | PC-RO2 | Fa0 | 192.168.2.11 | 255.255.255.0 | 192.168.2.1 | Client filiale Roma |
 | Server-RO | Fa0 | 192.168.2.20 | 255.255.255.0 | 192.168.2.1 | Server filiale Roma |
+
+---
 
 ### 💡 Cos'è una VPN — concetti chiave
 
@@ -119,8 +121,8 @@ PC-MI1 → Router-Milano → [ESP: header IP + payload CIFRATO] → Router-Roma 
 
 | Dispositivo | Modello PT | Quantità |
 |-------------|------------|----------|
-| Router perimetrali | Cisco 2901 | 2 (Router-Milano, Router-Roma) |
-| Router ISP | Cisco 2901 | 1 (Router-ISP) |
+| Router perimetrali | Cisco 1941 | 2 (Router-Milano, Router-Roma) |
+| Router ISP | Cisco 1941 | 1 (Router-ISP) |
 | Switch | Cisco 2960 (o generic) | 2 (Switch-Milano, Switch-Roma) |
 | PC | PC generico | 4 (PC-MI1, PC-MI2, PC-RO1, PC-RO2) |
 | Server | Server generico | 2 (Server-MI, Server-RO) |
@@ -129,10 +131,10 @@ PC-MI1 → Router-Milano → [ESP: header IP + payload CIFRATO] → Router-Roma 
 
 | Cavo | Da | Porta | A | Porta |
 |------|-----|-------|---|-------|
-| Copper Straight | Router-Milano | Gi0/0 | Switch-Milano | Fa0/1 |
-| Copper Straight | Router-Milano | Gi0/1 | Router-ISP | Fa0/0 |
-| Copper Straight | Router-ISP | Fa0/1 | Router-Roma | Gi0/1 |
-| Copper Straight | Router-Roma | Gi0/0 | Switch-Roma | Fa0/1 |
+| Copper Straight | Router-Milano | Gi0/0 | Switch-Milano | Gi0/1 |
+| Copper Crossover | Router-Milano | Gi0/1 | Router-ISP | Gi0/0 |
+| Copper Crossover | Router-ISP | Gi0/1 | Router-Roma | Gi0/1 |
+| Copper Straight | Router-Roma | Gi0/0 | Switch-Roma | Gi0/1 |
 | Copper Straight | Switch-Milano | Fa0/2 | PC-MI1 | Fa0 |
 | Copper Straight | Switch-Milano | Fa0/3 | PC-MI2 | Fa0 |
 | Copper Straight | Switch-Milano | Fa0/4 | Server-MI | Fa0 |
@@ -141,7 +143,9 @@ PC-MI1 → Router-Milano → [ESP: header IP + payload CIFRATO] → Router-Roma 
 | Copper Straight | Switch-Roma | Fa0/4 | Server-RO | Fa0 |
 
 > 📸 **Screenshot 1** — Topologia PT con tutti i dispositivi inseriti (senza cavi)  
-> 📸 **Screenshot 2** — Topologia PT con tutti i cavi collegati e luci verdi
+> 📸 **Screenshot 2** — Topologia PT con tutti i cavi collegati e luci verdi  
+> 🔸 **Nota cavi**: Le interfacce GigabitEthernet supportano Auto-MDIX, quindi si potrebbe usare anche un cavo `Straight`. 
+> Per far diventare verdi i triangoli dei collegamenti in Packet Tracer, assicurati innanzitutto che i dispositivi siano accesi e collegati con il cavo corretto. Accedi poi alla riga di comando di ogni router, digita enable e configure terminal, quindi abilita le interfacce interessate con il comando no shutdown. Se i triangoli rimangono arancioni, attendi circa un minuto per la negoziazione automatica; una volta che lo stato delle interfacce è up/up, i triangoli diventeranno verdi indicando che il collegamento è attivo.
 
 ---
 
@@ -167,13 +171,12 @@ Router-Milano(config-if)# ip address 203.0.113.2 255.255.255.252
 Router-Milano(config-if)# no shutdown
 
 ! ── Route statica verso rete Roma (via ISP) ─────────────────────────────────
+! Per raggiungere 192.168.2.0/24, manda i pacchetti a 203.0.113.1 (ISP)
 Router-Milano(config)# ip route 192.168.2.0 255.255.255.0 203.0.113.1
-! Significato: "Per raggiungere 192.168.2.0/24, manda i pacchetti a 203.0.113.1 (ISP)"
-! ── nel caso di collegamento con ISP reale, questa sarebbe la default route 
-! verso Internet ─────────────────────────────────────────────────────────────
-! Router-Milano(config)# ip route 0.0.0.0 255.255.255.0 203.0.113.1
-! Significato: "Per raggiungere qualsiasi rete non conosciuta, manda i 
-!pacchetti a 203.0.113.1 (ISP)" ──────────────────────────────────────────────
+! ── Nota: in uno scenario reale connesso a Internet, si userebbe la default route:
+! Per raggiungere qualsiasi rete non conosciuta, manda i pacchetti a 203.0.113.1 (ISP)
+! (Maschera 0.0.0.0 per "qualsiasi destinazione")
+! Router-Milano(config)# ip route 0.0.0.0 0.0.0.0 203.0.113.1
 
 ! ── Salvataggio configurazione ───────────────────────────────────────────────
 Router-Milano(config)# end
@@ -188,13 +191,13 @@ Router# configure terminal
 Router(config)# hostname Router-ISP
 
 ! ── Interfaccia verso Milano ─────────────────────────────────────────────────
-Router-ISP(config)# interface FastEthernet0/0
+Router-ISP(config)# interface GigabitEthernet0/0
 Router-ISP(config-if)# description Collegamento verso Router-Milano
 Router-ISP(config-if)# ip address 203.0.113.1 255.255.255.252
 Router-ISP(config-if)# no shutdown
 
 ! ── Interfaccia verso Roma ───────────────────────────────────────────────────
-Router-ISP(config)# interface FastEthernet0/1
+Router-ISP(config)# interface GigabitEthernet0/1
 Router-ISP(config-if)# description Collegamento verso Router-Roma
 Router-ISP(config-if)# ip address 203.0.113.5 255.255.255.252
 Router-ISP(config-if)# no shutdown
@@ -228,7 +231,6 @@ Router-Roma(config-if)# no shutdown
 
 ! ── Route statica verso rete Milano (via ISP) ───────────────────────────────
 Router-Roma(config)# ip route 192.168.1.0 255.255.255.0 203.0.113.5
-! Significato: "Per raggiungere 192.168.1.0/24, manda i pacchetti a 203.0.113.5 (ISP)"
 
 Router-Roma(config)# end
 Router-Roma# write memory
@@ -261,6 +263,7 @@ C:\> ping 192.168.2.10      (PC-RO1 — deve funzionare SENZA VPN)
 > controlla IP, subnet mask, gateway e routing prima di procedere.
 
 > 📸 **Screenshot 3** — Ping riuscito da PC-MI1 verso PC-RO1 (traffico ancora in chiaro)
+> aggiungere il proprio cognome prima di fare lo screenshot
 
 ---
 
@@ -284,6 +287,21 @@ chiunque intercetti il traffico su Internet!
 
 ## STEP 5 — Configurazione ISAKMP Phase 1 (IKE)
 
+### 💡 Nota preliminare sulle licenze
+
+Su router fisici Cisco 1941 (IOS 15.x) è necessario abilitare il pacchetto crittografico con:
+```
+Router> enable
+Router# configure terminal
+Router(config)# license boot module c1900 technology-package securityk9
+Router(config)# end
+Router# write memory
+Router# reload
+```
+
+
+### Phase 1 (IKE)
+
 La **Phase 1** crea un canale sicuro tra i due router per negoziare i parametri IPsec.
 È come una "handshake" in cui i due router concordano come comunicare in modo sicuro.
 
@@ -297,6 +315,8 @@ La **Phase 1** crea un canale sicuro tra i due router per negoziare i parametri 
 | `authentication pre-share` | PSK | Autenticazione con chiave pre-condivisa (password) |
 | `group 2` | DH Group 2 | Diffie-Hellman group 2 (1024-bit) per scambio chiavi |
 | `lifetime 86400` | 86400 secondi | Durata della SA Phase 1 (24 ore) |
+
+> ⚠️ **Nota sicurezza**: `hash sha` (SHA-1) è deprecato in produzione. In PT usiamo SHA-1 per compatibilità completa con l'ambiente simulato. Su router reali moderni preferire `hash sha256`.
 
 ### Router-Milano — ISAKMP Phase 1
 
@@ -315,12 +335,12 @@ Router-Milano(config-isakmp)# hash sha
 Router-Milano(config-isakmp)# authentication pre-share
 Router-Milano(config-isakmp)# group 2
 Router-Milano(config-isakmp)# lifetime 86400
-Router-Milano(config-isakmp)# exit
+    Router-Milano(config-isakmp)# exit
 
 ! ── Chiave pre-condivisa (PSK): DEVE essere identica su entrambi i router ────
 !   VPN_KEY_SECRET = la password segreta condivisa tra i due router
 !   203.0.113.6   = indirizzo IP del peer (Router-Roma, interfaccia WAN)
-    Router-Milano(config)# crypto isakmp key VPN_KEY_SECRET address 203.0.113.6
+Router-Milano(config)# crypto isakmp key VPN_KEY_SECRET address 203.0.113.6
 ```
 
 ### Router-Roma — ISAKMP Phase 1 (speculare)
@@ -338,7 +358,6 @@ Router-Roma(config-isakmp)# lifetime 86400
 Router-Roma(config-isakmp)# exit
 
 ! ── PSK: stessa password, ma con l'IP del PEER = Router-Milano ───────────────
-!   203.0.113.2 = indirizzo IP del peer (Router-Milano, interfaccia WAN)
 Router-Roma(config)# crypto isakmp key VPN_KEY_SECRET address 203.0.113.2
 ```
 
@@ -364,7 +383,6 @@ La **Phase 2** configura come cifrare il traffico dati reale tra le due LAN.
 ### Router-Milano — IPsec Phase 2 completa
 
 ```
-! ── Configurazione IPsec Phase 2 su Router-Milano ─────────────────────────────
 Router-Milano# configure terminal
 
 ! ── Transform-Set: come cifrare i dati del tunnel ───────────────────────────
@@ -400,7 +418,6 @@ Router-Milano(config)# interface GigabitEthernet0/1
 Router-Milano(config-if)# crypto map VPN-MAP
 Router-Milano(config-if)# exit
 
-! ── Salvataggio configurazione ───────────────────────────────────────────────
 Router-Milano(config)# end
 Router-Milano# copy running-config startup-config
 ```
@@ -444,7 +461,7 @@ Router-Roma# copy running-config startup-config
 
 ## STEP 7 — Attivazione del tunnel VPN
 
-Il tunnel VPN IPsec è **lazy**: non si attiva da solo ma si negozia solo quando arriva
+Il tunnel VPN IPsec è **lazy (on-demand)**: non si attiva da solo ma si negozia solo quando arriva
 traffico "interessante" (quello che corrisponde all'ACL VPN-TRAFFIC).
 
 ### Attivazione tramite ping
@@ -460,6 +477,13 @@ quindi il Router-Milano avvia la negoziazione IKE con Router-Roma.
 
 I **primi ping potrebbero andare in timeout** mentre il tunnel si negozia — è normale!
 Riesegui il ping dopo qualche secondo; una volta attivo il tunnel, i ping devono funzionare.
+
+> 💡 **Suggerimento PT**: Se il tunnel tarda a partire, forza la rinegoziazione con:
+> ```
+> Router-Milano# clear crypto sa
+> Router-Milano# clear crypto isakmp sa
+> ```
+> Poi attendi 5 secondi e ripeti il ping.
 
 ### Verifica Phase 1 — `show crypto isakmp sa`
 
@@ -511,17 +535,13 @@ interface: GigabitEthernet0/1
 
 Cerca i contatori `#pkts encaps` e `#pkts decaps` — devono essere > 0 dopo i ping.
 
-Cerca i contatori `#pkts encaps` e `#pkts decaps` — devono essere > 0 dopo i ping.
-
 > 📸 **Screenshot 7** — Output di `show crypto isakmp sa` con stato QM_IDLE / ACTIVE
 
 ---
 
-## STEP 8 — Verifica avanzata e test completo
+## STEP 8 — Test avanzati & Verifica completa
 
-### Test connettività completo
-
-Esegui questi ping e annota i risultati nella tabella:
+### 8.1 Test connettività completo
 
 | Test | Da | A | Atteso | Esito |
 |------|-----|---|--------|-------|
@@ -554,27 +574,29 @@ interface: GigabitEthernet0/1
 ```
 
 ✅ `encaps > 0` = Router-Milano sta cifrando pacchetti verso Roma  
-✅ `decaps > 0` = Router-Milano sta decifriando pacchetti da Roma  
+✅ `decaps > 0` = Router-Milano sta decifrando pacchetti da Roma  
 ❌ `send errors > 0` = problema di trasmissione  
 
-### Verifica con Simulation Mode (con VPN attiva)
+### 8.3 Test Avanzati & Comportamento del Tunnel *(Bonus +5 pt)*
 
-1. Attiva la Simulation Mode in PT
-2. Esegui un ping da PC-MI1 verso PC-RO1
-3. Osserva i pacchetti che passano per Router-ISP
-4. I pacchetti ora mostrano **ESP** invece di ICMP puro — il traffico è cifrato!
+| # | Test | Comando / Azione | Output atteso |
+|---|------|------------------|---------------|
+| T3 | Verifica ACL contatori | `show access-lists VPN-TRAFFIC` | `(XX matches)` dopo i ping. Dimostra che solo il traffico definito viene cifrato. |
+| T4 | Traffico NON interessante | `ping 203.0.113.1` (ISP) | Ping OK, ma i contatori IPsec **non aumentano**. In Simulation: ICMP standard, non ESP. |
+| T5 | Test MTU / Overhead | `ping 192.168.2.10 size 1472 df-bit` (OK)<br>`ping 192.168.2.10 size 1500 df-bit` (FAIL) | IPsec aggiunge ~52 byte di overhead. 1500 fallisce con `Packet needs to be fragmented but DF set`. *(Nota: PT a volte ignora df-bit; usalo come verifica concettuale).* |
 
 > 📸 **Screenshot 8** — Output completo `show crypto ipsec sa` con contatori > 0  
-> 📸 **Screenshot 9** — Simulation Mode con traffico ESP cifrato tra i router
+> 📸 **Screenshot 9** — Simulation Mode con traffico ESP cifrato tra i router  
+> *(Opzionali bonus: 📸11 `show access-lists`, 📸12 Simulation ESP vs ICMP, 📸13 `clear crypto sa` + rinegoziazione)*
 
 ---
 
 ## STEP 9 — Salvataggio
 
-Salva il progetto come `es08a_vpn.pkt`:
+Salva il progetto come `es01a_vpn.pkt`:
 
 1. In Packet Tracer: **File → Save As...**
-2. Nome file: `es08a_vpn.pkt`
+2. Nome file: `es01a_vpn.pkt`
 3. Salva nella tua cartella di lavoro
 
 > 📸 **Screenshot 10** — Finestra di salvataggio o conferma file salvato
@@ -585,7 +607,7 @@ Salva il progetto come `es08a_vpn.pkt`:
 
 ### CONFIGURAZIONE COMPLETA — Router-Milano
 
-```
+```cisco
 enable
 configure terminal
 hostname Router-Milano
@@ -630,7 +652,7 @@ write memory
 
 ### CONFIGURAZIONE COMPLETA — Router-Roma
 
-```
+```cisco
 enable
 configure terminal
 hostname Router-Roma
@@ -675,17 +697,17 @@ write memory
 
 ### CONFIGURAZIONE COMPLETA — Router-ISP
 
-```
+```cisco
 enable
 configure terminal
 hostname Router-ISP
 !
-interface FastEthernet0/0
+interface GigabitEthernet0/0
  description Collegamento verso Milano
  ip address 203.0.113.1 255.255.255.252
  no shutdown
 !
-interface FastEthernet0/1
+interface GigabitEthernet0/1
  description Collegamento verso Roma
  ip address 203.0.113.5 255.255.255.252
  no shutdown
@@ -699,104 +721,80 @@ write memory
 
 ---
 
-## 🛠️ Troubleshooting VPN
+## 🛠️ Troubleshooting & Esercizi di Debug
 
 ### Problema 1: Tunnel non si forma (ISAKMP SA non UP)
-
-**Sintomo**: `show crypto isakmp sa` è vuoto o mostra `MM_NO_STATE`
-
-**Cause possibili e soluzioni**:
-
-| Causa | Come verificare | Soluzione |
-|-------|----------------|-----------|
-| Policy mismatch | Confronta `show crypto isakmp policy` su entrambi i router | Rendere i parametri identici |
-| PSK errata | Controlla la chiave con `show running-config \| include isakmp key` | Riconfigurare con chiave identica |
-| No connettività IP | `ping 203.0.113.6` da Router-Milano | Verificare routing e cablaggio |
-| Crypto map non applicata | `show interface Gi0/1` — verifica "Outgoing crypto map" | Riapplicare `crypto map VPN-MAP` sull'interfaccia |
+**Sintomo**: `show crypto isakmp sa` vuoto o `MM_NO_STATE`
+| Causa | Soluzione |
+|-------|-----------|
+| Policy mismatch | Confronta `show crypto isakmp policy` su entrambi i router |
+| PSK errata | Verifica con `show run \| include isakmp key` |
+| No connettività IP | `ping 203.0.113.6` da Milano. Verifica routing e cablaggio |
+| Crypto map non applicata | `show run interface Gi0/1` → deve contenere `crypto map VPN-MAP` |
 
 ### Problema 2: Phase 1 OK ma Phase 2 non si forma
-
-**Sintomo**: `show crypto isakmp sa` mostra QM_IDLE, ma `show crypto ipsec sa` è vuoto
-
-**Cause possibili**:
-- ❌ ACL VPN-TRAFFIC non simmetrica tra i due router
-- ❌ Transform-set diverso tra i due router
-- ❌ Nessun traffico "interessante" generato (non è stato eseguito alcun ping)
-
-**Soluzione**: Verifica che le ACL siano speculari (sorgente e destinazione invertite),
-poi esegui un ping per generare traffico interessante.
+**Sintomo**: `QM_IDLE` presente, ma `show crypto ipsec sa` vuoto
+- ❌ ACL non speculare (sorgente/destinazione invertite)
+- ❌ Transform-set diverso
+- ❌ Nessun traffico "interessante" generato
+**Soluzione**: Verifica ACL speculari, poi esegui un ping.
 
 ### Problema 3: Tunnel UP ma ping fallisce
+**Sintomo**: SA UP, ma ping KO
+- Controlla `show crypto ipsec sa`: se `encaps` non aumenta → problema routing verso l'interfaccia WAN. Se `encaps` aumenta ma `decaps` no → problema dal lato remoto o firewall/ACL intermedio.
 
-**Sintomo**: SA Phase 1 e Phase 2 sono UP, ma i ping tra le LAN non funzionano
+### 🧪 Esercizio Troubleshooting Guidato (T8 - Bonus)
+1. Su Router-Roma, cambia temporaneamente `hash sha` → `hash md5`
+2. Esegui `clear crypto isakmp sa` e ping
+3. Osserva il fallimento con `show crypto isakmp sa`
+4. Ripristina `hash sha`, verifica il riavvio del tunnel
+> Questo esercizio allena il riconoscimento di mismatch di policy.
 
-**Cause possibili**:
-- ❌ Routing verso i PC non configurato correttamente
-- ❌ Gateway dei PC errato
-- ❌ ACL VPN-TRAFFIC troppo restrittiva (esclude alcune reti)
-
-**Verifica**: `show crypto ipsec sa` — controlla se `encaps` aumenta quando esegui il ping.
-Se encaps non aumenta → il pacchetto non arriva all'interfaccia con crypto map → problema routing.
-Se encaps aumenta ma decaps no → problema dall'altro lato.
-
-### Problema 4: Traffico asimmetrico
-
-**Sintomo**: ping da Milano→Roma funziona, Roma→Milano no (o viceversa)
-
-**Causa**: ACL VPN-TRAFFIC configurata solo su un router, oppure routing asimmetrico.
-
-**Soluzione**: Verifica che ENTRAMBI i router abbiano:
-1. ACL VPN-TRAFFIC con sorgente/destinazione speculare
-2. Crypto map applicata sulla propria interfaccia WAN
-3. Route statica verso la LAN remota
-
-### Comandi di debug (⚠️ solo in ambiente lab!)
-
-```
-Router-Milano# debug crypto isakmp
-!   Mostra i messaggi IKE in tempo reale (molto verboso!)
-
-Router-Milano# debug crypto ipsec
-!   Mostra i messaggi IPsec in tempo reale
-
-Router-Milano# undebug all
-!   IMPORTANTE: disattiva TUTTI i debug (o la console si riempie di log!)
-```
-
-> ⚠️ **AVVERTENZA**: I comandi debug sono molto verbosi e in ambienti di produzione
-> possono rallentare il router. Usali SOLO in laboratorio e sempre seguiti da `undebug all`.
+### ⚠️ Limitazione Packet Tracer sui debug
+I comandi `debug crypto isakmp` e `debug crypto ipsec` **non stampano output nella CLI** di PT. Per osservare le fasi di negoziazione:
+- Usa **Simulation Mode** → spunta `ISAKMP` e `ESP`
+- Esamina i PDU nel pannello Events
+- Usa sempre `undebug all` se lavori su hardware reale.
 
 ---
 
 ## 📝 Note tecniche e limitazioni di Packet Tracer
 
 ### Limitazioni di PT per IPsec
-
 | Funzionalità | Supporto in PT | Note |
 |-------------|---------------|-------|
-| IKEv1 (ISAKMP) | ✅ Supportato | Funziona come in questa esercitazione |
+| IKEv1 (ISAKMP) | ✅ Supportato | Standard per questa esercitazione |
 | IKEv2 | ❌ Non supportato | Solo su hardware reale o GNS3/EVE-NG |
-| AES-128 | ✅ Supportato | Usato in questo lab |
-| SHA-256 | ⚠️ Parziale | Usare SHA-1 (`hash sha`) per compatibilità |
-| GRE over IPsec | ⚠️ Limitato | In alcune versioni PT non funziona correttamente |
+| AES-128/256 | ✅ Supportato | Usato in questo lab |
+| SHA-256 | ⚠️ Parziale | Usa `hash sha` (SHA-1) per compatibilità garantita in PT |
 | Certificati RSA | ❌ Non supportato | Solo PSK in PT |
+| NAT-T (UDP 4500) | ❌ Limitato | Evita test con NAT intermedio |
 
 ### GRE vs IPsec — differenze principali
-
 | Caratteristica | GRE puro | IPsec puro | GRE over IPsec |
 |---------------|----------|------------|----------------|
 | Cifratura | ❌ No | ✅ Sì | ✅ Sì |
-| Routing protocols (OSPF, EIGRP) | ✅ Sì | ❌ No | ✅ Sì |
+| Routing dinamico (OSPF/EIGRP) | ✅ Sì | ❌ No | ✅ Sì |
 | Multicast | ✅ Sì | ❌ No | ✅ Sì |
 | Complessità | Bassa | Media | Alta |
-| Uso tipico | Tunneling interno | VPN sicura punto-punto | VPN con routing dinamico |
 
 ### Split Tunneling
+Il **split tunneling** instrada solo il traffico verso le reti aziendali nella VPN, lasciando il traffico Internet normale (YouTube, web) sul gateway locale.
+- ✅ Vantaggio: riduce carico e latenza
+- ❌ Rischio: traffico non-VPN non è protetto
+- In questa esercitazione **NON** usiamo split tunneling: tutto il traffico tra LAN passa nel tunnel.
 
-Il **split tunneling** è una modalità in cui solo il traffico verso le reti aziendali
-viene instradato nella VPN, mentre il traffico Internet normale (YouTube, Gmail, ecc.)
-usa la connessione locale del client.
+---
 
-- ✅ **Vantaggio**: riduce il carico sul tunnel VPN e migliora le prestazioni
-- ❌ **Rischio sicurezza**: il traffico non-VPN non è protetto e bypassa i controlli aziendali
-- In questa esercitazione NON usiamo split tunneling: tutto il traffico tra le LAN passa nel tunnel
+## 📊 Rubrica di Valutazione (40 pt base + 5 bonus)
+
+| Sezione | Punti | Criteri |
+|---------|-------|---------|
+| Topologia & Cablaggio | 4 | Dispositivi corretti, cavi giusti, luci verdi, naming coerente |
+| IP & Routing di base | 6 | Interfacce UP, mask corrette, route statiche funzionali, ping base OK |
+| Phase 1 (ISAKMP) | 8 | Policy identiche, PSK corretta, `show crypto isakmp sa` → QM_IDLE ACTIVE |
+| Phase 2 (IPsec) | 8 | Transform-set, ACL speculari, crypto map applicata, contatori >0 |
+| Verifica & Screenshot | 8 | Ping cross-LAN OK, Simulation ESP visibile, 10 screenshot richiesti |
+| **Test Avanzati (Opz.)** | **+5** | ACL matches, traffico non-interessante, MTU test, troubleshooting T8 |
+| **Totale** | **40 (+5)** | File `es01a_vpn.pkt` consegnato correttamente |
+

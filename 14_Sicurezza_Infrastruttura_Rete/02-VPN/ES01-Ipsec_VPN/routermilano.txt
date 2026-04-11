@@ -1,0 +1,107 @@
+router-mialno#show running-config 
+Building configuration...
+
+Current configuration : 1296 bytes
+!
+version 15.1
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+no service password-encryption
+!
+hostname router-mialno
+!
+!
+!
+!
+!
+!
+!
+!
+ip cef
+no ipv6 cef
+!
+!
+!
+!
+license udi pid CISCO1941/K9 sn FTX152474FW-
+license boot module c1900 technology-package securityk9
+!
+!
+!
+crypto isakmp policy 10
+ encr aes
+ authentication pre-share
+ group 2
+!
+crypto isakmp key pippo address 203.0.113.6
+!
+!
+!
+crypto ipsec transform-set VPN-TRANSFORM esp-aes esp-sha-hmac
+!
+crypto map VPN-MAP 10 ipsec-isakmp 
+ set peer 203.0.113.6
+ set transform-set VPN-TRANSFORM 
+ match address VPN-TRAFFIC
+!
+!
+!
+!
+!
+!
+!
+!
+spanning-tree mode pvst
+!
+!
+!
+!
+!
+!
+interface GigabitEthernet0/0
+ description LAN Milano 192.168.1.0/24
+ ip address 192.168.1.1 255.255.255.0
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/1
+ description WAN verso Router-ISP
+ ip address 203.0.113.2 255.255.255.252
+ duplex auto
+ speed auto
+ crypto map VPN-MAP
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+router rip
+!
+ip classless
+ip route 192.168.2.0 255.255.255.0 203.0.113.1 
+ip route 203.0.113.0 255.255.255.0 203.0.113.1 
+!
+ip flow-export version 9
+!
+!
+ip access-list extended VPN-TRAFFIC
+ permit ip 192.168.1.0 0.0.0.255 192.168.2.0 0.0.0.255
+!
+!
+!
+!
+!
+line con 0
+!
+line aux 0
+!
+line vty 0 4
+ login
+!
+!
+!
+end
+
+
+router-mialno#
+router-mialno#
