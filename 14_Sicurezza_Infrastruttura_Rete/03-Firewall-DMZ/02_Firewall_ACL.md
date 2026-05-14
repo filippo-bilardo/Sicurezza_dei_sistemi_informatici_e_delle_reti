@@ -459,7 +459,74 @@ interface GigabitEthernet0/0
 
 ---
 
-## 10. Tabella Riassuntiva ACL Cisco
+## 11. Gestione della Configurazione: running-config e startup-config
+
+Una configurazione Cisco IOS corretta non è utile se non viene **salvata** nel modo giusto. È fondamentale capire la differenza tra i due file di configurazione:
+
+### 11.1 running-config vs startup-config
+
+| | `running-config` | `startup-config` |
+|---|---|---|
+| **Dove risiede** | RAM (volatile) | NVRAM (non-volatile) |
+| **Quando viene usata** | Immediatamente, in tempo reale | Al prossimo riavvio del router |
+| **Cosa contiene** | La configurazione attiva in questo momento | La configurazione caricata all'avvio |
+| **Sopravvive al riavvio?** | ❌ No — viene persa | ✅ Sì — è permanente |
+
+**Scenario critico**: Se configuri tutte le ACL, le applichi alle interfacce, e poi il router si riavvia (blackout, guasto, manutenzione) **senza aver salvato**, al riavvio il router parte con la vecchia `startup-config` e tutte le tue modifiche sono **perse**.
+
+### 11.2 Comando di Salvataggio
+
+```cisco
+! Copia la running-config nella startup-config (salva definitivamente)
+copy running-config startup-config
+
+! Shortcut equivalente
+write memory
+! oppure
+wr
+```
+
+Dopo questo comando, anche se il router si riavvia, la configurazione è preservata.
+
+### 11.3 Visualizzazione e Backup
+
+```cisco
+! Visualizza la configurazione attiva
+show running-config
+
+! Visualizza la configurazione salvata
+show startup-config
+
+! Confronto: se le due differiscono, c'è qualcosa di non salvato
+```
+
+**Backup su server TFTP** (in ambienti reali):
+```cisco
+! Salva una copia della configurazione su server TFTP
+copy running-config tftp://192.168.1.100/fw-backup-20260514.cfg
+```
+
+In produzione, il backup della configurazione deve essere:
+- Salvato su storage esterno (TFTP, SCP, NMS)
+- Versionato (con data/ora nel nome file)
+- Cifrato se contiene password
+- Testato periodicamente (disaster recovery drill)
+
+### 11.4 Cancellazione della Configurazione
+
+```cisco
+! Cancella la startup-config (il router parte pulito al prossimo riavvio)
+erase startup-config
+
+! Riavvia il router
+reload
+```
+
+> ⚠️ **Attenzione**: `erase startup-config` + `reload` riporta il router allo stato di fabbrica. Usare con estrema cautela in produzione.
+
+---
+
+## 12. Tabella Riassuntiva ACL Cisco
 
 | Tipo | Numero | Filtra | Quando usare |
 |------|--------|--------|-------------|
@@ -471,4 +538,3 @@ interface GigabitEthernet0/0
 ---
 
 *Guida 02/04 — ES06 — Sistemi e Reti 3*
-

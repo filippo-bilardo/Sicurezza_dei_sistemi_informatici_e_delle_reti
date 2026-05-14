@@ -8,6 +8,27 @@
 
 ---
 
+## 📋 Modalità di Consegna
+
+Prepara un documento Google Doc strutturato come segue:
+
+1. **Copertina** — Nome, cognome, classe, data, titolo del progetto
+2. **Indice** — con riferimenti ai STEP
+3. **STEP 1** — Tabelle di indirizzamento compilate
+4. **STEP 2** — Screenshot della topologia Packet Tracer annotato con i nomi dei dispositivi
+5. **STEP 3** — Tabelle ACL complete con motivazioni
+6. **STEP 4** — Screenshot output CLI (`show ip route`, `show ip interface brief`, `show access-lists`) per entrambi i firewall
+7. **STEP 5** — Tabella test compilata + screenshot ping/simulazione
+8. **STEP 6** — Motivazioni regole ACL
+9. **STEP 7** — Risposte analisi critica
+10. **Conclusioni** (C1–C3)
+
+> **Risposte alle Domande di Riflessione** (R1.1–R6.3) indicated with ❓ at the end of each section.
+
+**Formato file PT**: salvare come `es06b_corpsecure.pkt`  
+
+---
+
 ## 🏢 Contesto Aziendale
 
 **CorpSecure S.p.A.** è una banca online italiana in rapida crescita. Offre servizi finanziari tramite web (internet banking, trading), posta elettronica istituzionale e API per partner commerciali.
@@ -110,6 +131,14 @@ Completa la tabella degli indirizzi IP di tutti i dispositivi:
 | App Server | NIC | ____________ | ____________ | ____________ | Server Farm |
 | Auth Server | NIC | ____________ | ____________ | ____________ | Server Farm |
 
+#### ❓ Domande di Riflessione — Piano di Indirizzamento
+
+**R1.1** Che criterio hai seguito per scegliere le subnet specifiche all'interno di `172.16.0.0/16`? Hai scelto subnet contigue o sparse? Perché una pianificazione contigua può semplificare le ACL con wildcard mask?
+
+**R1.2** La WAN usa una `/30` (2 host utili). Esiste un tipo di indirizzo IPv4 progettato proprio per link punto-punto che elimina lo "spreco" dei due indirizzi non assegnabili? Indica il tipo e spiega perché non viene usato qui.
+
+**R1.3** Hai separato LAN Uffici e Server Farm in due subnet distinte. Quali benefici concreti di sicurezza porta questa separazione rispetto a una singola grande subnet interna? Nomina almeno due minacce che questa segmentazione mitiga.
+
 ---
 
 ## 🏗️ STEP 2 — Schema Topologia (10 punti)
@@ -155,6 +184,14 @@ Esempio di struttura (da adattare con i tuoi IP):
        │     │
     LAN    Server Farm
 ```
+
+#### ❓ Domande di Riflessione — Topologia e Design
+
+**R2.1** Perché si usano switch dedicati per ogni zona (DMZ, LAN, Server Farm) invece di connettere direttamente i server alle interfacce dei firewall? Cosa cambierebbe in termini di scalabilità e sicurezza?
+
+**R2.2** Il Router-ISP è un dispositivo gestito dall'ISP, non da CorpSecure. Spiega come l'architettura scelta isola la rete interna da un eventuale compromissione del Router-ISP. Quale sarebbe il rischio se FW-EXT non esistesse?
+
+**R2.3** In ambienti reali ad alta sicurezza, FW-EXT e FW-INT sono spesso di **vendor diversi** (es. Cisco + Fortinet). Qual è il vantaggio di sicurezza di questa scelta rispetto a due firewall dello stesso vendor?
 
 ---
 
@@ -208,6 +245,16 @@ Progetta le regole ACL per entrambi i firewall. Usa il formato tabella e poi imp
 | 2 | _______ | _______ | _______ | _______ | _______ | _______ |
 | 3 | _______ | _______ | _______ | _______ | _______ | _______ |
 | 4 | DENY | IP | any | any | any | Default deny |
+
+#### ❓ Domande di Riflessione — Progettazione ACL
+
+**R3.1** Confronta le ACL di FW-EXT e quelle di FW-INT: quale dei due firewall ha regole più restrittive verso la LAN interna? Perché il firewall interno deve essere il "custode finale" anche se il traffico è già passato da FW-EXT?
+
+**R3.2** La tua ACL `ACL_INT_DMZ_IN` inizia con `DENY IP DMZ → LAN`. Eppure il Web Server potrebbe dover autenticarsi tramite l'Auth Server in Server Farm. Come risolvi questa contraddizione? Scrivi la regola ACL specifica che permette solo questa comunicazione.
+
+**R3.3** Inserire `DENY IP any any` esplicito a fine ACL ha un vantaggio rispetto all'implicit deny di Cisco IOS. Quale? (Suggerimento: considera il comando `show access-lists` e i log di sicurezza)
+
+**R3.4** Un auditor PCI-DSS chiede di dimostrare che "nessun host non autorizzato può contattare i server di database". Come le tue ACL dimostrano questa conformità? Indica il nome dell'ACL e il numero di regola specifico.
 
 ---
 
@@ -269,6 +316,14 @@ show access-lists
 
 Documenta l'output e allega gli screenshot.
 
+#### ❓ Domande di Riflessione — Configurazione Firewall
+
+**R4.1** Dopo `show access-lists`, i contatori di match mostrano quante volte ogni regola è stata colpita. Se la regola `DENY IP any any` ha contatore 0 dopo tutti i test, cosa significa? Se invece ha contatore molto alto, cosa potrebbe indicare?
+
+**R4.2** La route di default su FW-EXT punta a `203.0.113.1` (Router-ISP). Come fa FW-INT a instradare il traffico verso Internet? Descrivere il percorso completo di un pacchetto da `PC1` verso `8.8.8.8` (hop per hop, con interfacce).
+
+**R4.3** Hai configurato FW-INT con tre interfacce (DMZ, LAN, Server Farm). Se aggiungi una quarta interfaccia per una rete "Management" dedicata all'amministrazione remota dei firewall, quali regole ACL aggiungeresti per permettere solo SSH dalla rete Management verso i firewall, bloccando tutto il resto?
+
 ---
 
 ## 🧪 STEP 5 — Test di Connettività (15 punti)
@@ -290,6 +345,14 @@ Compila la seguente tabella eseguendo i test in Cisco PT. Per ogni test indica l
 
 > *TCP 80 non è facilmente testabile con semplice ping in PT. Usa il browser del PC simulato o la modalità simulazione.  
 > **TCP 389 è la porta LDAP. Decidi tu se il Web Server in DMZ deve autenticarsi contro LDAP — giustifica la scelta.
+
+#### ❓ Domande di Riflessione — Test di Connettività
+
+**R5.1** Analizza i risultati della colonna "Esito Reale". Se ci sono discrepanze rispetto all'esito atteso, indica per ciascuna il probabile punto di fallimento: ACL errata, route mancante, IP sbagliato, o `no shutdown` dimenticato. Come lo hai diagnosticato?
+
+**R5.2** Il test T10 (Web Server → Auth Server LDAP) era a tua discrezione. Quale decisione hai preso e perché? Se hai scelto di **permettere** questa comunicazione, quali misure aggiuntive (es. autenticazione mutua TLS, network segmentation) adotteresti per ridurre il rischio?
+
+**R5.3** Usando la modalità **Simulazione** di Packet Tracer, descrivi step-by-step come traceresti il percorso di un pacchetto dal test T07 (Router-ISP → PC1) per identificare esattamente su quale interfaccia e in quale ACL viene bloccato.
 
 ---
 
@@ -316,6 +379,14 @@ Scrivi le motivazioni per le regole che hai aggiunto (righe 5–8 in ogni tabell
 | ACL_INT_LAN_IN | 1 | ______________________________________________ |
 | ACL_INT_LAN_IN | 2 | ______________________________________________ |
 | ACL_INT_LAN_IN | 3 | ______________________________________________ |
+
+#### ❓ Domande di Riflessione — Documentazione e Motivazioni
+
+**R6.1** Guardando le motivazioni che hai scritto per le regole ACL: quale regola è stata più difficile da giustificare? C'è qualche regola che, rileggendola, ti sembra troppo permissiva? Proponi una versione più restrittiva.
+
+**R6.2** La relazione potrebbe essere letta da un auditor PCI-DSS. Quali elementi mancanti aggiungeresti per renderla conforme? (Consulta brevemente la sezione "Requirement 1" di PCI-DSS che riguarda firewall e network segmentation)
+
+**R6.3** Immagina di dover ripristinare questa configurazione tra 6 mesi da zero. Quali informazioni, se non documentate ora nella relazione, saresti costretto a ricostruire per tentativi? Questo esercizio ti ha convinto dell'importanza della documentazione tecnica?
 
 ---
 
@@ -352,6 +423,29 @@ Identifica almeno **2 possibili debolezze** nella tua implementazione e proponi 
 |---------------|---------------------|
 | _____________ | _____________________ |
 | _____________ | _____________________ |
+
+---
+
+## 🧠 Domande di Riepilogo Finali
+
+Rispondi a queste domande nelle **Conclusioni** della relazione:
+
+**C1 — Confronto Architetturale**  
+Completa la tabella comparativa con le tue parole, basandoti sull'esperienza diretta di aver configurato entrambe le architetture (singolo firewall in ES06-A, doppio firewall in ES06-B):
+
+| Caratteristica | Singolo Firewall (ES06-A) | Doppio Firewall (ES06-B) |
+|----------------|--------------------------|-------------------------|
+| Complessità configurazione | | |
+| Numero ACL totali | | |
+| Rischio se FW è compromesso | | |
+| Tempo di configurazione | | |
+| Adatto per... | | |
+
+**C2 — Scenario di Attacco**  
+Un attaccante sfrutta una vulnerabilità nel Web Server DMZ e ottiene una shell remota sul server. Descrivi, passo per passo, cosa può fare **con** la configurazione attuale del doppio firewall, e cosa potrebbe fare se esistesse solo un singolo firewall. Quale zona è più difficile da raggiungere e perché?
+
+**C3 — Riflessione Personale**  
+Descrivi in almeno 150 parole: qual è stato il passaggio più complesso di questo progetto, cosa hai imparato che non sapevi prima, e se dovessi ridisegnare questa rete per una vera banca cosa cambieresti (tecnologie, strumenti, approcci diversi da Cisco IOS)?
 
 ---
 

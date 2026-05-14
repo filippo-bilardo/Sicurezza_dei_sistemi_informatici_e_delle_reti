@@ -258,7 +258,132 @@ Simile al doppio firewall, ma con router tradizionali invece di firewall dedicat
 
 ---
 
-## 9. Tabella Comparativa Architetture
+## 9. Subnetting per Architetture DMZ
+
+Una delle attività fondamentali nella progettazione di una DMZ è il **piano di indirizzamento IP**. Ogni zona di rete deve avere la propria subnet, dimensionata correttamente in base al numero di host previsti.
+
+### 9.1 Indirizzi Privati RFC 1918
+
+I dispositivi interni utilizzano indirizzi **IP privati**, non routable su Internet, definiti dall'RFC 1918:
+
+| Classe | Intervallo | CIDR | Host disponibili |
+|--------|-----------|------|-----------------|
+| A | 10.0.0.0 – 10.255.255.255 | /8 | ~16 milioni |
+| B | 172.16.0.0 – 172.31.255.255 | /12 | ~1 milione |
+| C | 192.168.0.0 – 192.168.255.255 | /16 | ~65 mila |
+
+Questi indirizzi non vengono instradati su Internet: un router di bordo ISP scarta automaticamente i pacchetti con sorgente o destinazione RFC 1918. Per questo, i server in DMZ hanno IP privati visibili solo internamente, e il traffico verso Internet viene **nattato** (Network Address Translation) dal firewall perimetrale.
+
+### 9.2 Dimensionamento delle Subnet
+
+La scelta della maschera dipende dal numero di host previsti per la zona:
+
+| Maschera | CIDR | Host utili | Uso tipico |
+|---------|------|-----------|-----------|
+| /30 | 255.255.255.252 | **2** | Link punto-punto (WAN tra router) |
+| /29 | 255.255.255.248 | **6** | DMZ piccola (pochi server) |
+| /27 | 255.255.255.224 | **30** | DMZ media (4–10 server con margine) |
+| /26 | 255.255.255.192 | **62** | Server Farm interna |
+| /24 | 255.255.255.0 | **254** | LAN uffici standard |
+
+**Formula**: Host utili = 2ⁿ − 2, dove n è il numero di bit dell'host part (il −2 esclude indirizzo di rete e broadcast).
+
+> 💡 **Perché /27 per la DMZ?** Una DMZ tipica ospita 4–10 server (web, mail, DNS, reverse proxy). Con /27 si hanno 30 host utili: abbastanza per tutti i server previsti, con margine per crescita futura, senza sprecare indirizzi inutilmente.
+
+### 9.3 Link WAN Punto-a-Punto con /30
+
+Il collegamento tra il router del cliente (FW-EXT) e il router dell'ISP è un **link punto-a-punto**: servono esattamente **2 indirizzi** (uno per ciascuna estremità). Si usa quindi una `/30`:
+
+```
+ISP Router              FW-EXT
+203.0.113.1/30 ──────── 203.0.113.2/30
+```
+
+- Rete: `203.0.113.0`
+- Broadcast: `203.0.113.3`
+- Host utilizzabili: solo `.1` e `.2`
+
+Questa subnet è solitamente con indirizzi **pubblici** assegnati dall'ISP tramite contratto.
+
+> ℹ️ **IPv6 e link locali**: In IPv6 i link punto-a-punto usano indirizzi **link-local** (`fe80::/10`) che non richiedono assegnazione manuale, eliminando il "problema dei due indirizzi non usabili" tipico del /30 IPv4.
+
+### 9.4 Come Scegliere le Subnet — Procedura
+
+1. **Lista le zone** necessarie (WAN, DMZ, LAN, Server Farm, Management…)
+2. **Stima il numero di host** per ogni zona (ora + crescita futura × 2)
+3. **Scegli la maschera** che copre almeno quel numero con Host utili = 2ⁿ − 2
+4. **Assegna range contigui** all'interno dello spazio privato scelto (es. tutti in `172.16.0.0/16`)
+5. **Documenta** gateway, broadcast e range host per ogni zona
+
+**Benefici della segmentazione in subnet separate**:
+- Applicare ACL diverse per zona diventa semplice (un solo prefisso per zona)
+- Un broadcast storm in una zona non si propaga alle altre
+- Più facile identificare il traffico anomalo nei log
+- Requisito esplicito di PCI-DSS e ISO 27001
+
+---
+
+## 10. Compliance e Standard di Sicurezza
+
+Alcune architetture DMZ non sono solo una buona pratica: sono **obbligatorie** per legge o per contratto in certi settori.
+
+### 10.1 PCI-DSS (Payment Card Industry Data Security Standard)
+
+Obbligatorio per qualsiasi organizzazione che elabora, archivia o trasmette **dati di carte di pagamento** (Visa, Mastercard, ecc.).
+
+**Requirement 1 — Firewall e Segmentazione di Rete**:
+- Obbligo di installare e mantenere un firewall tra la rete pubblica e la rete dei sistemi che conservano i dati dei titolari di carta (**CHD — Cardholder Data Environment**)
+- La rete dei sistemi di pagamento deve essere **isolata** da tutte le altre reti tramite firewall con regole documentate e revisionate periodicamente
+- Obbligo di documentare ogni regola ACL con giustificazione scritta
+
+**Requirement 6** — I server in DMZ devono ricevere **patch di sicurezza** entro 1 mese dalla pubblicazione.
+
+### 10.2 ISO/IEC 27001
+
+Standard internazionale per i **Sistemi di Gestione della Sicurezza delle Informazioni (ISMS)**. Non prescrive architetture specifiche, ma richiede che le organizzazioni:
+- Identifichino e classifichino i propri asset informativi
+- Implementino controlli proporzionati al rischio
+- Documentino, revisionino e migliorino continuamente i controlli
+
+Controllo **A.13 — Network Security**: richiede la segmentazione delle reti, la gestione dei perimetri e il filtraggio del traffico.
+
+### 10.3 Perché una Banca Usa il Doppio Firewall
+
+Le istituzioni finanziarie (banche, istituti di credito, assicurazioni) sono soggette a normative severe:
+1. **PCI-DSS** — obbligatorio se processano carte di credito
+2. **DORA** (EU) — Digital Operational Resilience Act: impone requisiti di sicurezza e resilienza per istituzioni finanziarie nell'UE (in vigore dal 2025)
+3. **Banca d'Italia/EBA** — linee guida specifiche per la sicurezza IT bancaria
+
+Il doppio firewall soddisfa il principio di **"defense in depth"** richiesto da questi standard: anche se l'attaccante compromette il firewall esterno, deve ancora superare quello interno — progettato con regole completamente diverse — per raggiungere i dati sensibili.
+
+---
+
+## 11. Vendor Diversity nei Firewall
+
+In architetture ad alta sicurezza (banche, infrastrutture critiche), è consigliato usare **firewall di vendor diversi** per i due strati:
+
+```
+Internet
+   │
+[FW-EXT: Fortinet FortiGate]    ← Vendor A
+   │
+  DMZ
+   │
+[FW-INT: Cisco ASA / pfSense]   ← Vendor B
+   │
+  LAN
+```
+
+**Motivazione**: Le vulnerabilità (CVE) sono spesso specifiche di un vendor o di una famiglia di prodotti. Se FW-EXT e FW-INT sono entrambi dello stesso vendor (es. Cisco), un bug critico scoperto in quel firmware li espone entrambi simultaneamente. Con vendor diversi:
+- Un attaccante che conosce un exploit per Fortinet non ha automaticamente accesso al firewall Cisco
+- Richiede competenze, exploit e tecniche diverse per i due strati
+- Le patch non arrivano contemporaneamente: i due firewall raramente hanno entrambi la stessa vulnerabilità aperta nello stesso momento
+
+**Svantaggio**: gestione più complessa (due console, due sistemi di aggiornamento, due set di competenze richieste al team IT).
+
+---
+
+## 12. Tabella Comparativa Architetture
 
 | Caratteristica | Singolo Firewall | Doppio Firewall | Screened Subnet |
 |----------------|-----------------|-----------------|-----------------|
@@ -272,7 +397,7 @@ Simile al doppio firewall, ma con router tradizionali invece di firewall dedicat
 
 ---
 
-## 10. Riepilogo Concetti Chiave
+## 13. Riepilogo Concetti Chiave
 
 | Termine | Definizione |
 |---------|-------------|
@@ -284,6 +409,9 @@ Simile al doppio firewall, ma con router tradizionali invece di firewall dedicat
 | **Bastion Host** | Server rafforzato esposto in DMZ, punto di accesso controllato |
 | **Reverse Proxy** | Server DMZ che riceve richieste esterne e le inoltra a server interni |
 | **Single Point of Failure** | Componente la cui rottura causa il fallimento dell'intero sistema |
+| **RFC 1918** | Standard che definisce i blocchi di indirizzi IP privati (non routable su Internet) |
+| **PCI-DSS** | Standard di sicurezza obbligatorio per chi tratta dati di carte di pagamento |
+| **Vendor Diversity** | Uso di prodotti di vendor diversi nei vari strati difensivi per ridurre l'impatto di vulnerabilità comuni |
 
 ---
 

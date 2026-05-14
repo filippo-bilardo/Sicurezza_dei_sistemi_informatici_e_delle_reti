@@ -3,7 +3,7 @@
 🔬 **Tipo**: Laboratorio guidato  
 ⭐ **Difficoltà**: ⭐⭐⭐ (Intermedio)  
 ⏱️ **Durata**: 2–3 ore  
-🛠️ **Strumento**: Cisco Packet Tracer 8.x  
+🛠️ **Strumento**: Cisco Packet Tracer
 📁 **File da salvare**: `es06a_dmz.pkt`
 
 ---
@@ -22,6 +22,20 @@
 | 📸8 | STEP 7 | Ping BLOCCATO: Web Server DMZ → PC1 (esito negativo) |
 | 📸9 | STEP 8 | Output di `show access-lists` con contatori |
 | 📸10 | STEP 9 | Schermata di salvataggio file .pkt |
+
+---
+
+## 📋 Modalità di Consegna
+
+Creare un documento (Google Doc) con:
+
+1. **Copertina**: Nome, Cognome, Classe, Data
+2. **Indice**: Numerato con le sezioni dell'esercitazione
+3. **Screenshot**: Per ogni sezione indicata con 📸 (minimo 10)
+4. **Risposte alle domande di riflessione**: Indicate con ❓
+5. **Conclusioni personali**: Cosa hai imparato, difficoltà incontrate, miglioramenti possibili
+
+**Consegna**: File PDF nominato `DMZ_Lab_[CognomeNome]_[Classe]_[Data].pdf`
 
 ---
 
@@ -58,7 +72,7 @@ L'infrastruttura sarà configurata su un **Router Cisco 2901** che funge da fire
               ┌────────────┼────┐    ┌─┼──────────────┐
               │            │    │    │ │              │
          Web Server   DNS Server  Mail Server   PC1..PC4
-         192.168.100.10 .11     .12   10.0.0.10..13
+      192.168.100.10      .11        .12      10.0.0.10..13
 ```
 
 ---
@@ -91,6 +105,14 @@ L'infrastruttura sarà configurata su un **Router Cisco 2901** che funge da fire
 
 > 💡 **Perché /27 per la DMZ?** Una DMZ ospita tipicamente pochi server (3–10). Una /27 offre 30 host utilizzabili: abbastanza per una DMZ aziendale media, senza sprecare indirizzi.
 
+#### ❓ Domande di Riflessione — Subnet
+
+**R1.1** La DMZ usa una subnet /27 (30 host utili) mentre la LAN usa /24 (254 host utili). Come mai si sono scelte maschere diverse? Cosa succederebbe se assegnassi una /24 anche alla DMZ?
+
+**R1.2** Il link WAN tra Firewall e Router-ISP usa una /30 (solo 2 host utili). Perché si usa una /30 e non una /24 in un collegamento punto-punto? Quanti indirizzi verrebbero sprecati con una /24?
+
+**R1.3** Confronta gli spazi di indirizzamento usati: `10.0.0.0/8` (RFC 1918 privato), `192.168.100.0/27` (privato) e `203.0.113.0/30` (TEST-NET-3, RFC 5737). Perché in produzione reale gli indirizzi WAN sarebbero diversi?
+
 ### 1.3 Flussi di Traffico Consentiti e Bloccati
 
 | Sorgente | Destinazione | Azione | Motivazione |
@@ -102,6 +124,14 @@ L'infrastruttura sarà configurata su un **Router Cisco 2901** che funge da fire
 | LAN | Internet | ✅ PERMIT | I dipendenti navigano su Internet |
 | DMZ | LAN | ❌ DENY | **Regola critica**: se un server DMZ è compromesso, non deve poter attaccare la LAN |
 | DMZ | Internet | ✅ PERMIT (established) | Risposte a connessioni iniziate dalla LAN/DMZ |
+
+#### ❓ Domande di Riflessione — Politiche di Sicurezza
+
+**R2.1** La regola "DMZ → LAN = DENY" è definita la più importante di tutta la configurazione. Spiega con parole tue perché un server in DMZ compromesso potrebbe diventare pericoloso se potesse raggiungere liberamente la LAN.
+
+**R2.2** Internet può raggiungere la DMZ solo su porte specifiche (80, 443, 53, 25). Perché non si permette semplicemente tutto il traffico TCP verso la DMZ? Quali rischi comporterebbe aprire anche porte come 22 (SSH) o 3389 (RDP)?
+
+**R2.3** La LAN può accedere sia alla DMZ che a Internet liberamente. In una politica di sicurezza più restrittiva, quali limitazioni aggiungere ai PC interni? (Pensa a social media, streaming, orari di lavoro)
 
 ---
 
@@ -138,6 +168,14 @@ Usa i seguenti cavi per connettere i dispositivi:
 | Switch-LAN | Fa0/5 | PC4 | Fa0 | Copper Straight-Through |
 
 > 📸 **Screenshot 2**: Cattura la topologia completa con tutti i cavi connessi (le lucine devono essere verdi).
+
+#### ❓ Domande di Riflessione — Topologia
+
+**R3.1** In questa topologia un singolo Router Cisco 2901 svolge sia il ruolo di **router** che di **firewall**. Quali vantaggi e svantaggi ha questa scelta rispetto all'uso di un dispositivo firewall dedicato (es. Cisco ASA)?
+
+**R3.2** Il collegamento tra Router-ISP e Firewall usa un **cavo incrociato (cross-over)**. Perché non si usa un cavo dritto (straight-through) tra due router? In quali situazioni moderne questo non è più necessario?
+
+**R3.3** I due switch (Switch-DMZ e Switch-LAN) sono dispositivi di livello 2. Cosa succederebbe alla sicurezza se si connettessero direttamente i server DMZ e i PC LAN allo stesso switch, senza separazione fisica?
 
 ---
 
@@ -192,6 +230,14 @@ Per ogni PC → **Desktop** → **IP Configuration**:
 | PC4 | 10.0.0.13 | 255.255.255.0 | 10.0.0.1 |
 
 > 📸 **Screenshot 3**: Mostra la configurazione CLI del Firewall con tutte e tre le interfacce configurate (`show ip interface brief`).
+
+#### ❓ Domande di Riflessione — Configurazione IP
+
+**R4.1** Il comando `no shutdown` è necessario per attivare le interfacce del router. Per impostazione predefinita, le interfacce dei router Cisco sono in stato "administratively down". Perché questo comportamento predefinito è una buona pratica di sicurezza?
+
+**R4.2** Il Web Server ha come **Default Gateway** l'IP del Firewall (`192.168.100.1`). Cosa succederebbe alla connettività del Web Server se configurassi un gateway errato, ad esempio `192.168.100.2`? Come lo diagnosticheresti?
+
+**R4.3** I PC nella LAN hanno tutti lo stesso Default Gateway (`10.0.0.1`). Se un PC invia un pacchetto verso un IP della LAN (es. `10.0.0.11`), il pacchetto passa attraverso il gateway? Perché sì o perché no?
 
 ---
 
@@ -249,6 +295,14 @@ GigabitEthernet0/2     203.0.113.2     YES manual up       up
 
 > 📸 **Screenshot 4**: Output di `show ip route` sul Firewall (deve mostrare le rotte verso le 3 reti).
 
+#### ❓ Domande di Riflessione — Firewall e Routing
+
+**R5.1** Il comando `ip route 0.0.0.0 0.0.0.0 203.0.113.1` configura una **rotta di default** (default route). Cosa significa "0.0.0.0 0.0.0.0"? Come decide il router di usare questa rotta invece di una più specifica?
+
+**R5.2** Esegui `show ip route` e identifica le lettere nell'output (`C` per Connected, `S` per Static, ecc.). Perché le reti `10.0.0.0/24`, `192.168.100.0/27` e `203.0.113.0/30` appaiono con la lettera `C`? Cosa significherebbe se non apparissero?
+
+**R5.3** Il comando `copy running-config startup-config` (equivalente a `write memory`) salva la configurazione. Cosa succederebbe se non lo eseguissi e il router venisse riavviato? Qual è la differenza tra `running-config` e `startup-config`?
+
 ---
 
 ## 🌐 STEP 5 — Configurazione Web Server e DNS in DMZ
@@ -271,6 +325,14 @@ Clicca su **DNS Server** → **Services** → **DNS**:
 3. Clicca **Add**
 
 > 📸 **Screenshot 5**: Mostra il Web Server con HTTP attivo e il DNS Server con il record A configurato.
+
+#### ❓ Domande di Riflessione — Servizi in DMZ
+
+**R6.1** Hai configurato il DNS Server con un record `A` per `www.techcorp.local`. Quale tipo di record DNS useresti per mappare un dominio a un altro dominio (alias)? E per mappare un IP a un nome (ricerca inversa)?
+
+**R6.2** Il Web Server nella DMZ serve solo HTTP (porta 80). In un ambiente reale, quali altre misure di sicurezza configureresti sul server stesso (oltre al firewall) per ridurre la superficie di attacco? Elenca almeno 3.
+
+**R6.3** Nella configurazione attuale non è presente un **Mail Server** attivo su Packet Tracer, ma è presente nella topologia. Se dovessi abilitare il servizio SMTP, su quale porta ascolterebbe? Perché la posta in arrivo (SMTP) è nella DMZ ma la posta in uscita degli utenti interni di solito no?
 
 ---
 
@@ -387,6 +449,16 @@ Firewall# write memory
 
 > 📸 **Screenshot 6**: Output di `show running-config` sul Firewall — sezione access-list e interface.
 
+#### ❓ Domande di Riflessione — ACL e Sicurezza
+
+**R7.1** Le ACL di Cisco vengono applicate con `ip access-group ACL_NOME in` (direzione **in**). Cosa significherebbe applicarle con `out` (uscita)? Quale delle due direzioni è generalmente preferibile per un firewall perimetrale e perché?
+
+**R7.2** Le ACL standard (numeri 1–99) filtrano solo per **indirizzo sorgente**, mentre le ACL estese (100–199, o named) filtrano anche per destinazione, protocollo e porta. Perché per questo scenario è obbligatorio usare ACL estese?
+
+**R7.3** Nella `ACL_WAN_IN` c'è la regola `permit tcp any 10.0.0.0 0.0.0.255 established`. La keyword `established` verifica i flag TCP. In un attacco **TCP SYN flood**, questa regola verrebbe aggirata? Perché sì o perché no?
+
+**R7.4** Il wildcard mask `0.0.0.31` corrisponde alla subnet `/27` (es. `192.168.100.0/27`). Come si calcola il wildcard mask partendo dalla subnet mask `255.255.255.224`? Esegui il calcolo passo-passo.
+
 ---
 
 ## ✅ STEP 7 — Verifica delle ACL (Test di Connettività)
@@ -442,6 +514,14 @@ Request timeout for icmp_seq 1
 > 📸 **Screenshot 7**: Test T1 — ping da PC1 a Web Server DMZ (esito positivo con 4 reply).
 > 📸 **Screenshot 8**: Test T4 — ping da Web Server DMZ a PC1 (esito negativo, timeout).
 
+#### ❓ Domande di Riflessione — Test di Connettività
+
+**R8.1** Il test T6 (Router-ISP → Web Server) è bloccato perché `ACL_WAN_IN` non permette ICMP. Eppure in un sito web reale, gli amministratori spesso vogliono poter fare ping al server dal proprio ufficio remoto. Come modificheresti l'ACL per permettere ICMP **solo da un IP specifico** dell'amministratore (es. `198.51.100.5`)?
+
+**R8.2** Quando esegui un ping, il pacchetto percorre un cammino **andata e ritorno** (ICMP Echo Request + Echo Reply). Per il test T1 (PC1 → Web Server), attraverso quali ACL passa il pacchetto di **andata**? E quello di **ritorno**? Traccia il percorso completo interfaccia per interfaccia.
+
+**R8.3** Il risultato del test T4 è "Request timeout". Ci sono almeno due possibili ragioni per questo messaggio in Packet Tracer: (a) il pacchetto viene bloccato dall'ACL, oppure (b) la rete non è raggiungibile. Come potresti distinguere i due casi usando `show access-lists` con i contatori?
+
 ---
 
 ## 📊 STEP 8 — Analisi con show access-lists
@@ -484,6 +564,14 @@ Verifica che l'ACL sia applicata:
 ```
 
 > 📸 **Screenshot 9**: Output completo di `show access-lists` con i contatori dei match.
+
+#### ❓ Domande di Riflessione — Analisi ACL
+
+**R9.1** Osserva i contatori di `show access-lists` dopo aver eseguito tutti i test. Quale ACL ha il contatore più alto nella regola `deny`? A quale test corrisponde? Cosa ci dicono questi numeri sull'attività di rete?
+
+**R9.2** La voce `deny ip any any` alla fine di ogni ACL è esplicita, ma in realtà Cisco IOS ha già un **implicit deny** alla fine di ogni ACL. Perché è comunque consigliabile inserire la regola di deny esplicita? (Suggerimento: pensa ai contatori e ai log)
+
+**R9.3** Se un amministratore vuole aggiungere una nuova regola per permettere il traffico SSH (porta 22) dalla LAN verso il Web Server DMZ, in quale ACL deve inserirla e in quale posizione? Scrivi il comando Cisco IOS corretto.
 
 ---
 
@@ -586,6 +674,28 @@ Prima di consegnare, verifica:
 - [ ] Test T4, T5 superati (ping bloccato)
 - [ ] 10 screenshot catturati e salvati
 - [ ] File `es06a_dmz.pkt` salvato
+- [ ] Tutte le domande di riflessione (R1.1–R9.3) risposte nel documento di consegna
+
+---
+
+## 🧠 Domande di Riepilogo Finali
+
+❓ Rispondi a queste domande nelle **conclusioni** del documento di consegna:
+
+**C1 — Architettura**  
+Spiega con parole tue la differenza tra una rete **senza DMZ** (solo LAN + Internet) e una rete **con DMZ**. Quali attacchi vengono mitigati dall'introduzione della DMZ?
+
+**C2 — Difesa in profondità**  
+Il principio di "Defense in Depth" (difesa a strati) prevede che la sicurezza non sia affidata a un unico meccanismo. In questa topologia, quali altri strati di sicurezza aggiungere oltre alle ACL sul firewall perimetrale? Elenca almeno 3 misure complementari.
+
+**C3 — Scenario di attacco**  
+Un attaccante riesce a compromettere il Web Server nella DMZ sfruttando una vulnerabilità in Apache. Descrivi step-by-step cosa potrebbe fare l'attaccante **con** la configurazione attuale e cosa riuscirebbe a fare **senza** le ACL di protezione verso la LAN.
+
+**C4 — Confronto con soluzioni reali**  
+Questa simulazione usa un router Cisco con ACL stateless. In un'azienda reale si userebbero firewall come pfSense, Cisco ASA o FortiGate. Ricerca una differenza chiave tra le ACL stateless di IOS e un firewall stateful e spiega perché quella differenza è importante per la sicurezza.
+
+**C5 — Riflessione personale**  
+Descrivi in almeno 150 parole: cosa hai imparato di nuovo in questa esercitazione, quale passaggio ti ha messo in difficoltà e come lo hai risolto, e cosa implementeresti diversamente se dovessi progettare questa rete per una vera azienda.
 
 ---
 
